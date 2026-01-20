@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>16 Tables with 4 Chairs Each — Layout</title>
+  <style>
+    :root{
+      --table-size: 110px;
+      --chair-size: 36px;
+      --gap: 24px;
+      --bg: #f6f7fb;
+      --table-color: #fff;
+      --chair-color: #e6eef8;
+      --accent: #2b6cb0;
+      --shadow: 0 6px 18px rgba(15,23,42,0.08);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%;margin:0;background:var(--bg);color:#0f172a}
+    .container{max-width:1200px;margin:36px auto;padding:20px}
+
+    h1{font-size:20px;margin:0 0 18px}
+    p.lead{margin:0 0 18px;color:#334155}
+
+    /* floor grid */
+    .floor{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:var(--gap);
+      align-items:center;
+    }
+
+    /* single table box */
+    .table-wrap{
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+    }
+
+    .table-container{
+      width:var(--table-size);
+      height:var(--table-size);
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:auto;
+    }
+
+    /* the table itself (circle) */
+    .table{
+      width:64%;
+      height:64%;
+      border-radius:50%;
+      background:var(--table-color);
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:600;
+      color:var(--accent);
+    }
+
+    /* chairs - positioned around the table */
+    .chair{
+      width:var(--chair-size);
+      height:var(--chair-size);
+      border-radius:8px;
+      background:var(--chair-color);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      box-shadow:0 4px 10px rgba(2,6,23,0.06);
+      position:absolute;
+    }
+
+    /* positions */
+    .chair.top{ top: -10px; left:50%; transform:translate(-50%, -50%); }
+    .chair.right{ right: -10px; top:50%; transform:translate(50%, -50%); }
+    .chair.bottom{ bottom: -10px; left:50%; transform:translate(-50%, 50%); }
+    .chair.left{ left: -10px; top:50%; transform:translate(-50%, -50%); }
+
+    /* small table label */
+    .table-num{
+      position:absolute;
+      bottom:-28px;
+      width:100%;
+      text-align:center;
+      font-size:13px;
+      color:#0f172a;
+    }
+
+    /* responsive: reduce to 2 columns on small screens */
+    @media (max-width:920px){
+      .floor{grid-template-columns: repeat(3, 1fr);} 
+    }
+    @media (max-width:680px){
+      .floor{grid-template-columns: repeat(2, 1fr);} 
+    }
+    @media (max-width:420px){
+      .floor{grid-template-columns: repeat(1, 1fr);} 
+    }
+
+    /* helper: legend */
+    .legend{margin-top:18px;display:flex;gap:12px;align-items:center}
+    .legend .dot{width:18px;height:18px;border-radius:4px;display:inline-block}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dining Layout — 16 Tables (each with 4 chairs)</h1>
+    <p class="lead">Each table shown has 4 chairs positioned Top/Right/Bottom/Left. Tables are arranged in a tidy grid (4 × 4). You can copy this single file and open it in your browser.</p>
+
+    <div class="floor" role="list">
+
+      <!-- Use a simple loop-like pattern (we'll explicitly write 16 instances) -->
+      <!-- Table 1 -->
+      <div class="table-wrap" role="listitem">
+        <div class="table-container" aria-label="Table 1">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T1</div>
+          <div class="table-num">Table 1</div>
+        </div>
+      </div>
+
+      <!-- Table 2 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 2">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T2</div>
+          <div class="table-num">Table 2</div>
+        </div>
+      </div>
+
+      <!-- Table 3 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 3">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T3</div>
+          <div class="table-num">Table 3</div>
+        </div>
+      </div>
+
+      <!-- Table 4 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 4">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T4</div>
+          <div class="table-num">Table 4</div>
+        </div>
+      </div>
+
+      <!-- Table 5 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 5">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T5</div>
+          <div class="table-num">Table 5</div>
+        </div>
+      </div>
+
+      <!-- Table 6 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 6">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T6</div>
+          <div class="table-num">Table 6</div>
+        </div>
+      </div>
+
+      <!-- Table 7 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 7">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T7</div>
+          <div class="table-num">Table 7</div>
+        </div>
+      </div>
+
+      <!-- Table 8 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 8">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T8</div>
+          <div class="table-num">Table 8</div>
+        </div>
+      </div>
+
+      <!-- Table 9 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 9">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T9</div>
+          <div class="table-num">Table 9</div>
+        </div>
+      </div>
+
+      <!-- Table 10 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 10">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T10</div>
+          <div class="table-num">Table 10</div>
+        </div>
+      </div>
+
+      <!-- Table 11 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 11">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T11</div>
+          <div class="table-num">Table 11</div>
+        </div>
+      </div>
+
+      <!-- Table 12 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 12">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T12</div>
+          <div class="table-num">Table 12</div>
+        </div>
+      </div>
+
+      <!-- Table 13 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 13">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T13</div>
+          <div class="table-num">Table 13</div>
+        </div>
+      </div>
+
+      <!-- Table 14 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 14">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T14</div>
+          <div class="table-num">Table 14</div>
+        </div>
+      </div>
+
+      <!-- Table 15 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 15">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T15</div>
+          <div class="table-num">Table 15</div>
+        </div>
+      </div>
+
+      <!-- Table 16 -->
+      <div class="table-wrap">
+        <div class="table-container" aria-label="Table 16">
+          <div class="chair top" aria-hidden="true">1</div>
+          <div class="chair right" aria-hidden="true">2</div>
+          <div class="chair bottom" aria-hidden="true">3</div>
+          <div class="chair left" aria-hidden="true">4</div>
+          <div class="table">T16</div>
+          <div class="table-num">Table 16</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="legend">
+      <div class="dot" style="background:var(--table-color);border:1px solid #dbeafe"></div>
+      <div style="font-size:13px">Table</div>
+      <div class="dot" style="background:var(--chair-color);border:1px solid #e0f2fe"></div>
+      <div style="font-size:13px">Chair</div>
+    </div>
+
+  </div>
+</body>
+</html>

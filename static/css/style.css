@@ -1,0 +1,91 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+}
+.login-box h1{
+  font-size: 36px;
+  color:black
+}
+.login-box span{
+  font-size: 30px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: #131212;
+  font-style: italic;
+  margin-left: 2%;
+}
+.background-wrapper {
+  background: url("/static/images/HOTEL_SHAHI_BG.jpg") no-repeat center center fixed;
+  background-size:100% 100%;
+  background-position: 0%;
+  background-position:center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+U
+.login-box{
+margin-bottom: 15%;
+}
+.text input {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #1f1e1e;
+  border-radius: 2px;
+    outline: none;
+}
+.login-box button {
+  width: 100%;
+  padding: 15px;
+  margin: 10px;
+  background: #a52a2a;
+  border: none;
+  color: #242323;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 4%;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+  
+
+}
+
+.login-box button:hover {
+  background: #d0b920;
+}
+
+.login-box p{
+ font-size: 15px;
+  text-align: right;
+  margin: 10px 0 0;
+  color: #0d0b0b;
+}
+.forgot-link {
+  display: block;
+  margin-top: 10px;
+  margin-left: 86%;
+  text-decoration: none;
+  color: #f0f00c;
+  font-size: 14px;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+  color: #e3dc0e;
+}

@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Shahi Mutton Khanawal — Dashboard (Final Clean)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#070707; --panel:#0f0f10; --muted:#9ca3af; --gold:#d4af37; --gold-2:#f2c94c;
+      --glass: rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(180deg,var(--bg),#050505);color:#fff;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    .topbar{position:fixed;left:0;right:0;top:0;height:72px;background:linear-gradient(90deg, rgba(212,175,55,0.06), rgba(0,0,0,0.25));backdrop-filter: blur(4px);border-bottom:1px solid rgba(212,175,55,0.06);display:flex;align-items:center;justify-content:space-between;padding:12px 20px;z-index:1000}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-2));display:flex;align-items:center;justify-content:center;color:#0a0a0a;font-weight:800}
+    .top-actions{display:flex;align-items:center;gap:12px}
+    .search{display:flex;align-items:center;background:var(--panel);border-radius:10px;padding:8px 10px;border:1px solid rgba(255,255,255,0.03);gap:8px}
+    .search input{background:transparent;border:none;outline:none;color:#fff;width:260px}
+    .app{max-width:1400px;margin:0 auto;padding:100px 20px 40px;display:grid;grid-template-columns:260px 1fr;gap:20px}
+    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.01), var(--panel));border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 36px rgba(0,0,0,0.6);height:calc(100vh - 140px);position:sticky;top:88px}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;color:var(--muted);cursor:pointer;user-select:none}
+    .nav-item.active{background:linear-gradient(90deg, rgba(212,175,55,0.06), rgba(255,223,119,0.02));color:#fff;font-weight:600;border-left:3px solid var(--gold)}
+    main{min-height:calc(100vh - 140px)}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 30px rgba(0,0,0,0.35);margin-bottom:18px}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:18px}
+    .card{padding:14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
+    .pos-layout{display:grid;grid-template-columns:1fr 420px;gap:18px}
+    .menu-list{max-height:520px;overflow:auto;padding:10px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02)}
+    .menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;margin-bottom:8px;background:transparent;border:1px solid rgba(255,255,255,0.02)}
+    .menu-item .meta .name{font-weight:700}
+    .menu-item .meta .cat{font-size:12px;color:var(--muted)}
+    .price{color:var(--gold);font-weight:700}
+    .add-btn{padding:8px 10px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--gold),var(--gold-2));color:#111;font-weight:700;cursor:pointer}
+    .bill-panel{display:flex;flex-direction:column;gap:12px}
+    .bill-items{min-height:160px;max-height:420px;overflow:auto;padding:12px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.03)}
+    .bill-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),var(--gold-2));color:#111;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);font-weight:600}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff}
+    .table-map{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:flex-start}
+    .table-unit{width:120px;height:120px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.1));display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+    .table-unit.available{box-shadow:0 8px 30px rgba(34,197,94,0.06);border-left:4px solid rgba(34,197,94,0.12)}
+    .table-unit.reserved{box-shadow:0 8px 30px rgba(244,196,120,0.06);border-left:4px solid rgba(244,196,120,0.12)}
+    .table-unit.ondine{box-shadow:0 8px 30px rgba(255,98,98,0.06);border-left:4px solid rgba(255,98,98,0.12)}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000}
+    .modal{background:#0b0b0b;padding:18px;border-radius:10px;width:420px;border:1px solid rgba(255,255,255,0.04)}
+    input,select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;margin-top:6px}
+    @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} .pos-layout{grid-template-columns:1fr} .app{grid-template-columns:1fr;padding-top:96px} .sidebar{position:relative;height:auto;top:0;display:flex;flex-direction:row;overflow:auto;padding:12px} .sidebar .nav-item{flex:1;justify-content:center} }
+    @media (max-width:640px){ .cards{grid-template-columns:1fr} .search input{width:120px} }
+    .muted{color:var(--muted);font-size:13px}
+    .price-small{color:var(--gold);font-weight:700}
+    /* ---------- MOBILE RESPONSIVE FIX (100% Working) ---------- */
+
+@media (max-width: 768px) {
+
+    /* TOPBAR */
+    .topbar {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .top-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .search input {
+        width: 100%;
+    }
+
+    /* MAIN GRID */
+    .app {
+        grid-template-columns: 1fr;
+        padding: 140px 12px 20px;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 10px;
+        white-space: nowrap;
+        gap: 10px;
+    }
+
+    .nav-item {
+        flex: none;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    /* STAT CARDS */
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    /* POS LAYOUT */
+    .pos-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .bill-panel {
+        width: 100%;
+    }
+
+    /* TABLE MAP */
+    .table-map {
+        justify-content: center;
+    }
+
+    .table-unit {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+  </style>
+</head>
+<body>
+  /upar wala Dashboard hai/
+ <div style="
+    height:88px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 28px;
+    background:linear-gradient(100deg, rgba(255,215,115,0.22), rgba(15,15,15,0.88), rgba(255,215,115,0.12));
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,215,115,0.25);
+    box-shadow:0 6px 28px rgba(0,0,0,0.55);
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:9999;
+">
+
+    <!-- LEFT SIDE: BRAND -->
+    <div style="display:flex;align-items:center;gap:20px;">
+
+        <!-- PREMIUM LOGO -->
+        <div style="
+            width:62px;
+            height:62px;
+            border-radius:14px;
+            overflow:hidden;
+            background:linear-gradient(135deg,#f9d78b,#b58621);
+            box-shadow:0 6px 22px rgba(255,215,110,0.45);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            border:2px solid rgba(255,255,255,0.18);
+        ">
+            <img src='/static/images/logo.jpg' style="width:100%;height:100%;object-fit:cover;">
+        </div>
+
+        <!-- BRAND NAME -->
+        <div style="display:flex;flex-direction:column;line-height:1.2;">
+            <span style="
+                font-size:24px;
+                font-weight:800;
+                color:#f9e8c9;
+                letter-spacing:0.8px;
+                text-shadow:0 0 10px rgba(255,215,120,0.45);
+            ">
+                Shahi Mutton Khanawal
+            </span>
+
+            <span style="
+                font-size:13px;
+                color:#dac89d;
+                opacity:0.9;
+                letter-spacing:0.5px;
+            ">
+                 Admin Dashboard • POS System
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- CENTER: SEARCH BAR -->
+    <div style="
+        flex:1;
+        display:flex;
+        justify-content:center;
+        padding:0 40px;
+    ">
+        <div style="
+            width:60%;
+            display:flex;
+            align-items:center;
+            background:rgba(255,255,255,0.08);
+            padding:10px 16px;
+            border-radius:14px;
+            gap:10px;
+            border:1px solid rgba(255,255,255,0.10);
+            box-shadow:0 4px 16px rgba(0,0,0,0.35);
+        ">
+            <i class="fa fa-search" style="color:#d7c289;font-size:16px;"></i>
+            <input id="globalSearch" placeholder="Search menu, tables, items..." 
+            style="
+                flex:1;
+                background:transparent;
+                border:none;
+                outline:none;
+                color:#f1e6c7;
+                font-size:14px;
+            ">
+        </div>
+    </div>
+
+
+    <!-- RIGHT PANEL: ACTIONS + USER -->
+    <div style="display:flex;align-items:center;gap:16px;">
+
+        <!-- QUICK ACTION: Add Item -->
+        <button onclick="document.querySelector('#openAddItem').click()" style="
+            padding:10px 16px;
+            background:linear-gradient(135deg,#f5d27c,#ad7f1f);
+            border:none;
+            border-radius:12px;
+            color:#111;
+            font-weight:700;
+            cursor:pointer;
+            box-shadow:0 4px 16px rgba(255,215,110,0.4);
+        ">
+            <i class="fa fa-plus"></i> Add Item
+        </button>
+
+        <!-- QUICK ACTION: New Bill -->
+        <button onclick="document.querySelector('#navCreateBill').click()" style="
+            padding:10px 16px;
+            background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,215,115,0.25);
+            border-radius:12px;
+            color:#f0d9a0;
+            font-weight:700;
+            cursor:pointer;
+        ">
+            <i class="fa fa-receipt"></i> Billing
+        </button>
+
+        <!-- LOGOUT BUTTON -->
+        <button onclick="location.href='/logout'" style="
+            padding:10px 16px;
+            background:linear-gradient(135deg,#ff6d6d,#c92a2a);
+            border:none;
+            border-radius:12px;
+            color:white;
+            font-weight:700;
+            cursor:pointer;
+            box-shadow:0 6px 16px rgba(255,80,80,0.45);
+        ">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </button>
+
+      <!-- USER AVATAR -->
+<div style="
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid rgba(255,255,255,0.22);
+    box-shadow:0 6px 18px rgba(255,200,90,0.45);
+">
+    <img src="{{ url_for('static', filename='images/PROFILE.jpg') }}"
+         style="width:100%; height:100%; object-fit:cover;">
+</div>
+
+    </div>
+
+</div>
+/upar wala Dashboard hai/
+
+    <div class="top-actions">
+      <div class="search">
+        <i class="fa fa-search" style="color:var(--muted)"></i>
+        <input id="globalSearch" placeholder="Search menu / table / invoice..." />
+      </div>
+
+      <button class="btn ghost" id="openAddItem"><i class="fa fa-plus"></i> Add Item</button>
+      <button class="btn ghost" id="exportCSV"><i class="fa fa-file-csv"></i> Export</button>
+      <button class="btn ghost" onclick="location.href='/logout'"><i class="fa fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="app" role="application">
+    <aside class="sidebar" aria-label="Navigation">
+      <div style="margin-bottom:14px">
+        <div style="font-size:13px;color:var(--muted)">Welcome</div>
+        <div style="font-weight:700;font-size:18px;color:var(--gold)">Pranav </div>
+      </div>
+
+      <div>
+        <div class="nav-item active" data-target="panelOverview"><i class="fa fa-tachometer-alt"></i> Overview</div>
+        <div class="nav-item" data-target="panelMenu"><i class="fa fa-utensils"></i> Menu</div>
+        <div class="nav-item" data-target="panelPOS"><i class="fa fa-receipt"></i> Billing / POS</div>
+        <div class="nav-item" data-target="panelTables"><i class="fa fa-chair"></i> Tables</div>
+        <div class="nav-item" data-target="panelReports"><i class="fa fa-chart-line"></i> Reports</div>
+      </div>
+    </aside>
+
+    <main>
+      <section id="panelOverview" class="panel section">
+        <h2>Overview</h2>
+        <div class="muted">Live snapshot — sales, orders and occupancy</div>
+<div class="cards" style="
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+">
+
+  <!-- CARD 1 -->
+  <div style="
+      padding:18px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,215,115,0.28);
+      box-shadow:0 8px 30px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+  ">
+      <span style="color:#d8c79f;font-size:14px;font-weight:600;">Today's Orders</span>
+      <span id="k_orders" style="
+          font-size:30px;
+          font-weight:800;
+          color:#ffe8a8;
+          text-shadow:0 0 14px rgba(255,210,120,0.6);
+      ">—</span>
+  </div>
+
+  <!-- CARD 2 -->
+  <div style="
+      padding:18px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,215,115,0.28);
+      box-shadow:0 8px 30px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+  ">
+  <span style="color:#d8c79f;font-size:14px;font-weight:600;">
+  Today’s Revenue
+</span>
+
+      <span id="k_revenue" style="
+          font-size:30px;
+          font-weight:800;
+          color:#ffd884;
+          text-shadow:0 0 14px rgba(255,210,120,0.6);
+      ">—</span>
+  </div>
+
+<script>
+  document.getElementById("k_revenue").innerText = "₹ {{ today_revenue }}";
+
+</script>
+
+  <!-- CARD 3 -->
+  <div style="
+      padding:18px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,215,115,0.28);
+      box-shadow:0 8px 30px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+  ">
+      <span style="color:#d8c79f;font-size:14px;font-weight:600;">Occupied Tables</span>
+      <span id="k_tables" style="
+          font-size:30px;
+          font-weight:800;
+          color:#ffe8a8;
+          text-shadow:0 0 14px rgba(255,210,120,0.6);
+      ">—</span>
+  </div>
+
+  <!-- CARD 4 -->
+  <div style="
+      padding:18px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,215,115,0.28);
+      box-shadow:0 8px 30px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+  ">
+      <span style="color:#d8c79f;font-size:14px;font-weight:600;">Pending Payments</span>
+      <span id="k_pending" style="
+          font-size:30px;
+          font-weight:800;
+          color:#ffd884;
+          text-shadow:0 0 14px rgba(255,210,120,0.6);
+      ">—</span>
+  </div>
+
+</div>
+
+
+        <div class="panel" style="display:flex;gap:18px;align-items:center;justify-content:space-between">
+          <div style="flex:1">
+            <div style="font-weight:700">Today's Summary</div>
+            <div style="color:var(--muted);margin-top:6px">Quick metrics and latest transactions.</div>
+            <div style="margin-top:12px;max-height:120px;overflow:auto">
+              <table style="width:100%;color:#fff;border-collapse:collapse">
+                <thead><tr><th style="text-align:left;color:var(--muted);font-weight:600">Bill</th><th style="text-align:left;color:var(--muted);font-weight:600">Table</th><th style="text-align:left;color:var(--muted);font-weight:600">Amount</th></tr></thead>
+                <tbody id="recentBills"><tr><td colspan="3" class="muted">No recent bills</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="width:260px">
+            <div style="font-weight:700;color:var(--gold)">Quick Actions</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+              <button class="btn" id="navCreateBill"><i class="fa fa-plus"></i> New Bill</button>
+              <button class="btn ghost" id="navFindMenu"><i class="fa fa-utensils"></i> Find Menu</button>
+              <button class="btn ghost" id="navExportCsv"><i class="fa fa-file-csv"></i> Export CSV</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panelMenu" class="panel section" style="display:none">
+        <h2>Menu Management</h2>
+        <div class="muted">Add new items, edit or delete existing items.</div>
+
+        <div style="display:flex;gap:18px;margin-top:12px;align-items:flex-start">
+          <div style="width:320px" class="panel">
+            <div style="font-weight:700">Add Item</div>
+            <div style="margin-top:10px">
+              <label>Item name</label>
+              <input id="add_item_name" placeholder="e.g. Shahi Mutton Biryani">
+              <label style="margin-top:8px">Category</label>
+              <select id="add_item_cat">
+                <option>Non-Veg</option>
+                <option>Veg</option>
+              </select>
+              <label style="margin-top:8px">Price (₹)</label>
+              <input id="add_item_price" type="number" step="0.01" placeholder="e.g. 240.00">
+              <div style="display:flex;gap:10px;margin-top:10px">
+                <button class="btn" id="addItemBtn"><i class="fa fa-plus"></i> Add Item</button>
+                <button class="btn ghost" id="resetAdd">Reset</button>
+              </div>
+              <div id="addMsg" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+            </div>
+          </div>
+
+          <div style="flex:1" class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div style="font-weight:700">Menu Items</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="menuFilter" placeholder="Search menu..." style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
+                <div class="muted">Total: <span id="menuCount">0</span></div>
+              </div>
+            </div>
+
+            <div class="menu-list" id="menuList">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panelPOS" class="panel section" style="display:none">
+        <h2>Billing / POS</h2>
+        <div class="muted">Select menu items on the left, review & submit on right.</div>
+
+        <div class="pos-layout" style="margin-top:12px">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-weight:700">Menu</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="posSearch" placeholder="Search menu..." style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
+                <select id="filterCategory" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
+                  <option value="">All</option><option>Veg</option><option>Non-Veg</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="menu-list" id="menuListPOS">
+            </div>
+          </div>
+
+          <div class="bill-panel">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700">Current Bill</div>
+              <div class="muted">Auto-calculates GST (5%)</div>
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center">
+              <label style="min-width:70px">Table</label>
+              <select id="bill_table" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff" name="table_number"></select>
+              <label style="min-width:70px">Status</label>
+              <select id="bill_status" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff" name="status">
+                <option>Paid</option><option>Pending</option>
+              </select>
+            </div>
+
+            <div class="bill-items" id="billItems">
+              <div id="billEmpty" style="text-align:center;color:var(--muted);padding:40px 10px">No items added. Click <strong>+</strong> on left to add items.</div>
+            </div>
+
+            <div class="bill-totals" style="background:linear-gradient(90deg, rgba(212,175,55,0.03), rgba(255,255,119,0.02));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+              <div style="display:flex;justify-content:space-between"><div class="muted">Subtotal</div><div id="subtotal" class="price-small">₹ 0.00</div></div>
+              <div style="display:flex;justify-content:space-between"><div class="muted">GST (5%)</div><div id="gst" class="price-small">₹ 0.00</div></div>
+              <div style="display:flex;justify-content:space-between;font-weight:800;margin-top:8px"><div>Total</div><div id="grandTotal" class="price-small">₹ 0.00</div></div>
+
+              <div style="display:flex;gap:10px;margin-top:12px">
+                <button class="btn" id="submitBillBtn"><i class="fa fa-paper-plane"></i> Generate & Submit</button>
+                <button class="btn ghost" id="clearBillBtn"><i class="fa fa-trash"></i> Clear</button>
+                <button class="btn secondary" id="printBillBtn"><i class="fa fa-print"></i> Print</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panelTables" class="panel section" style="display:none">
+        <h2>Tables</h2>
+        <div class="muted">Click a table to toggle status (Available → Reserved → On-dine)</div>
+
+        <div style="margin-top:12px" class="table-map" id="tableMap"></div>
+      </section>
+
+      <section id="panelReports" class="panel section" style="display:none">
+        <h2>Reports</h2>
+        <div class="muted">Exports & daily summaries.</div>
+        <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn ghost" id="generateReport">Generate PDF (demo)</button>
+        </div>
+      </section>
+
+      <div class="muted" style="text-align:center;margin-top:10px">© 2026 Shahi Mutton Khanawal — Final Dashboard</div>
+    </main>
+  </div>
+
+  <div id="addModal" style="display:none">
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700">Add New Item</div>
+          <button class="btn ghost" id="closeModal"><i class="fa fa-times"></i></button>
+        </div>
+        <div style="margin-top:12px">
+          <label>Item name</label>
+          <input id="modal_item_name" placeholder="e.g. Shahi Mutton Biryani">
+          <label style="margin-top:8px">Category</label>
+          <select id="modal_item_cat"><option>Non-Veg</option><option>Veg</option></select>
+          <label style="margin-top:8px">Price (₹)</label>
+          <input id="modal_item_price" type="number" step="0.01" placeholder="e.g. 240.00">
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn" id="modalAddBtn">Add</button>
+            <button class="btn ghost" id="modalCancelBtn">Cancel</button>
+          </div>
+          <div id="modalMsg" style="margin-top:8px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+  
+
+ <script>
+
+
+const API = { items:'/api/items', addItem:'/api/menu/add', billing:'/api/billing', tables:'/api/tables' };
+const LS = { ITEMS:'smk_items_v2', BILLS:'smk_bills_v2', TABLES:'smk_tables_v2' };
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
+function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function tryFetch(url, opts={}, timeout=3500){ const controller=new AbortController(); const id=setTimeout(()=>controller.abort(),timeout); try{ const res=await fetch(url,{...opts,signal:controller.signal}); clearTimeout(id); if(!res.ok) throw new Error('Bad response'); return res; }catch(e){ clearTimeout(id); throw e; } }
+
+/* Demo fallback menu (used if localStorage empty) */
+const demoItems = [
+  {id:1, item_name:'Shahi Mutton Biryani', category:'Non-Veg', price:240.00},
+  {id:2, item_name:'Paneer Butter Masala', category:'Veg', price:190.00},
+  {id:3, item_name:'Tandoori Roti', category:'Veg', price:20.00}
+];
+
+/* Force menu helper — run in console if items missing */
+window.forceMenu = function(){
+  localStorage.setItem(LS.ITEMS, JSON.stringify(demoItems));
+  alert('Menu reset done — reloading');
+  location.reload();
+};
+
+/* Data layer */
+async function getItems(){
+  try{ const r=await tryFetch(API.items); const data=await r.json(); localStorage.setItem(LS.ITEMS, JSON.stringify(data)); return data; }
+  catch(e){ const local=localStorage.getItem(LS.ITEMS); if(local) return JSON.parse(local); localStorage.setItem(LS.ITEMS, JSON.stringify(demoItems)); return demoItems; }
+}
+function saveItemsLocal(items){ localStorage.setItem(LS.ITEMS, JSON.stringify(items)); }
+async function addItemToServer(payload){
+  try{ const r=await tryFetch(API.addItem,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const json=await r.json(); if(json && json.items) saveItemsLocal(json.items); return json.items || json; }
+  catch(e){ const arr=JSON.parse(localStorage.getItem(LS.ITEMS)||'[]'); const id=arr.length?Math.max(...arr.map(x=>x.id))+1:1; arr.unshift({id,item_name:payload.item_name,category:payload.category,price:parseFloat(payload.price)}); localStorage.setItem(LS.ITEMS, JSON.stringify(arr)); return arr; }
+}
+async function submitBillToServer(payload){
+  try{ const r=await tryFetch(API.billing,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},4500); const json=await r.json(); saveBillLocal(json||payload); return {ok:true, data:json||payload}; } catch(e){ saveBillLocal(payload); return {ok:false, err:e}; }
+}
+function saveBillLocal(bill){ const bills=JSON.parse(localStorage.getItem(LS.BILLS)||'[]'); bills.unshift({...bill, created_at:new Date().toISOString()}); localStorage.setItem(LS.BILLS, JSON.stringify(bills.slice(0,20))); }
+
+async function getTables(){
+  try{ const r=await tryFetch(API.tables); const data=await r.json(); localStorage.setItem(LS.TABLES, JSON.stringify(data)); return data; }
+  catch(e){ const local=localStorage.getItem(LS.TABLES); if(local) return JSON.parse(local); const t=Array.from({length:10},(_,i)=>({table_no:i+1,status:'available'})); localStorage.setItem(LS.TABLES, JSON.stringify(t)); return t; }
+}
+async function updateTableServer(table_no,status){
+  try{ const r=await tryFetch(API.tables + '/' + table_no,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})}); const json=await r.json(); const tables=JSON.parse(localStorage.getItem(LS.TABLES)||'[]'); const idx=tables.findIndex(x=>x.table_no==table_no); if(idx>-1){ tables[idx].status=status; localStorage.setItem(LS.TABLES, JSON.stringify(tables)); } return json; }
+  catch(e){ const tables=JSON.parse(localStorage.getItem(LS.TABLES)||'[]'); const idx=tables.findIndex(x=>x.table_no==table_no); if(idx>-1){ tables[idx].status=status; localStorage.setItem(LS.TABLES, JSON.stringify(tables)); } return null; }
+}
+
+/* RENDERERS */
+async function renderMenuList(){
+  const items = await getItems();
+  const list = qs('#menuList'); 
+  const posList = qs('#menuListPOS');
+
+  // ✅ Safety check
+  if(!list || !posList){
+    console.warn("menuList or menuListPOS not found");
+    return;
+  }
+
+  list.innerHTML = ''; 
+  posList.innerHTML = '';
+
+  items.forEach(it=>{
+    const html = `
+      <div class="menu-item">
+        <div class="meta">
+          <div class="name">${escapeHtml(it.item_name)}</div>
+          <div class="cat">${escapeHtml(it.category)}</div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="price">₹ ${parseFloat(it.price).toFixed(2)}</div>
+
+          <button 
+            class="add-btn" 
+            data-id="${it.id}" 
+            data-name="${escapeHtml(it.item_name)}" 
+            data-price="${it.price}">
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+    list.insertAdjacentHTML('beforeend', html);
+    posList.insertAdjacentHTML('beforeend', html);
+  });
+
+  // ✅ MENU SECTION ke + button ke liye
+  qsa('#menuList .add-btn').forEach(b => 
+    b.addEventListener('click', e => {
+      const id = e.currentTarget.dataset.id;
+      const name = e.currentTarget.dataset.name;
+      const price = parseFloat(e.currentTarget.dataset.price);
+      addItemToBill(id, name, price);
+    })
+  );
+
+  // ✅ ✅ ✅ POS SECTION ke + button ke liye (MAIN FIX)
+  qsa('#menuListPOS .add-btn').forEach(b => 
+    b.addEventListener('click', e => {
+      const id = e.currentTarget.dataset.id;
+      const name = e.currentTarget.dataset.name;
+      const price = parseFloat(e.currentTarget.dataset.price);
+      addItemToBill(id, name, price);
+    })
+  );
+
+  qs('#menuCount').textContent = items.length;
+}
+
+
+async function renderTables(){
+  const tables = await getTables(); const wrap = qs('#tableMap'); wrap.innerHTML = '';
+  tables.forEach(t=>{
+    const d=document.createElement('div'); d.className='table-unit '+(t.status||'available'); d.dataset.table=t.table_no; d.innerHTML=`<div class="table-label">Table ${t.table_no}</div><div class="table-sub">${t.status}</div>`;
+    d.addEventListener('click', async ()=>{ let next='reserved'; if(d.classList.contains('available')) next='reserved'; else if(d.classList.contains('reserved')) next='ondine'; else next='available'; d.classList.remove('available','reserved','ondine'); d.classList.add(next); d.querySelector('.table-sub').textContent=next; await updateTableServer(t.table_no,next); populateTableSelect(); });
+    wrap.appendChild(d);
+  });
+  const occ = tables.filter(x=>x.status==='ondine').length; qs('#k_tables').textContent = `${occ} / ${tables.length}`;
+}
+
+function populateTableSelect(){ getTables().then(tables=>{ const sel = qs('#bill_table'); sel.innerHTML=''; tables.forEach(t=>{ const opt=document.createElement('option'); opt.value=t.table_no; opt.textContent='Table '+t.table_no+(t.status?(' ('+t.status+')'):''); sel.appendChild(opt); }); }); }
+
+function renderRecentBills(){ const recent = JSON.parse(localStorage.getItem(LS.BILLS)||'[]'); const tbody=qs('#recentBills'); tbody.innerHTML=''; if(!recent.length){ tbody.innerHTML='<tr><td colspan="3" class="muted">No recent bills</td></tr>'; return; } recent.slice(0,5).forEach(b=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${b.bill_no||'INV'}</td><td>${b.table_number||'-'}</td><td class="price-small">₹ ${parseFloat(b.amount||0).toFixed(2)}</td>`; tbody.appendChild(tr); }); qs('#k_orders').textContent = recent.length; qs('#k_revenue').textContent = '₹ ' + (recent.reduce((s,r)=>s + (parseFloat(r.amount)||0),0).toFixed(2) || '0.00'); qs('#k_pending').textContent = recent.filter(r=>r.status==='Pending' || r.status==='pending').length || 0; }
+
+
+/* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
+/* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
+
+let bill = { items: [] };
+
+async function addItemToBill(id, name, price){
+  bill.items.push({
+    id: id,
+    name: name,
+    price: parseFloat(price)
+  });
+
+  // ✅ AUTO TABLE STATUS = ONDINE (order start hote hi)
+  const tableNo = document.getElementById("bill_table").value;
+ await updateTableServer(tableNo, "ondine");
+renderTables();   // 👈 UI instantly update
+
+
+  renderBill();
+}
+
+
+function removeItem(index){
+  bill.items.splice(index, 1);
+  renderBill();
+}
+
+function clearBill(){
+  bill.items = [];
+  renderBill();
+}
+
+
+function renderBill(){
+  const billItems = document.getElementById("billItems");
+
+  if(!billItems){
+    console.warn("Bill UI not ready yet");
+    return;
+  }
+
+  // ✅ bill empty message ko remove/recreate safely
+  let billEmpty = document.getElementById("billEmpty");
+
+  billItems.innerHTML = "";
+
+  if(bill.items.length === 0){
+    if(!billEmpty){
+      billEmpty = document.createElement("div");
+      billEmpty.id = "billEmpty";
+      billEmpty.style.textAlign = "center";
+      billEmpty.style.color = "#9ca3af";
+      billEmpty.style.padding = "40px 10px";
+      billEmpty.innerHTML = 'No items added. Click <strong>+</strong> on left to add items.';
+      billItems.appendChild(billEmpty);
+    }
+    return;
+  }
+
+  let subtotal = 0;
+
+  bill.items.forEach((item, index)=>{
+    subtotal += item.price;
+
+    billItems.innerHTML += `
+      <div class="bill-row">
+        <div>
+          <div style="font-weight:700">${item.name}</div>
+          <div class="muted" style="font-size:12px">ID: ${item.id}</div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="price-small">₹ ${item.price.toFixed(2)}</div>
+          <button class="btn ghost" onclick="removeItem(${index})" style="margin-top:6px">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>`;
+  });
+
+  const gst = subtotal * 0.05;
+  const total = subtotal + gst;
+
+  document.getElementById("subtotal").textContent = "₹ " + subtotal.toFixed(2);
+  document.getElementById("gst").textContent = "₹ " + gst.toFixed(2);
+  document.getElementById("grandTotal").textContent = "₹ " + total.toFixed(2);
+}
+
+
+
+
+/* ---------- PRINT ---------- */
+function printBillPreview(){
+  if(!bill.items.length){ alert('Add items first'); return; }
+  const table = qs('#bill_table').value; const status = qs('#bill_status').value; const date=new Date().toLocaleString('en-IN'); const billNo='INV'+Date.now();
+  const rows = bill.items.map((it,i)=>`<tr><td style="padding:8px">${i+1}</td><td style="padding:8px">${escapeHtml(it.name)}</td><td style="padding:8px;text-align:right">₹ ${it.price.toFixed(2)}</td></tr>`).join('');
+  const html = `<html><head><title>Invoice ${billNo}</title><style>body{font-family:Arial;padding:20px;color:#111}th,td{border-bottom:1px solid #ddd;padding:8px}th{background:#f7f7f7}</style></head><body><h2>Shahi Mutton Khanawal</h2><div>Bill No: ${billNo} | ${date}</div><div>Table: ${table} | Status: ${status}</div><table style="width:100%;border-collapse:collapse;margin-top:12px"><thead><tr><th>#</th><th>Item</th><th style="text-align:right">Price</th></tr></thead><tbody>${rows}</tbody></table><div style="text-align:right;margin-top:12px;font-weight:800">Total: ${qs('#grandTotal').textContent}</div><div style="margin-top:24px;font-size:12px;color:#666">Thank you for dining with us!</div></body></html>`;
+  const win = window.open('','_blank','width=800,height=800'); win.document.open(); win.document.write(html); win.document.close(); win.onload = ()=> { setTimeout(()=>{ try{ win.print(); win.close(); }catch(e){} },300); };
+}
+/* ---------- SUBMIT BILL ---------- */
+async function submitBill(){
+  if(bill.items.length === 0){ 
+    alert('Add items to bill'); 
+    return; 
+  }
+
+  const table = qs('#bill_table').value;
+  const status = qs('#bill_status').value;
+  const totalText = qs('#grandTotal').textContent.replace('₹','').trim();
+
+  // ✅ ✅ ✅ IMPORTANT: items ko ARRAY me hi save kar rahe hain
+  const payload = { 
+    bill_no: 'INV' + Date.now(),
+    table_number: table,
+    items: JSON.stringify(bill.items),   // 👈 ARRAY SAVE
+    amount: parseFloat(totalText),
+    status 
+  };
+
+  qs('#submitBillBtn').disabled = true;
+  qs('#submitBillBtn').textContent = 'Submitting...';
+
+  const res = await submitBillToServer(payload);
+
+  qs('#submitBillBtn').disabled = false;
+  qs('#submitBillBtn').innerHTML = '<i class="fa fa-paper-plane"></i> Generate & Submit';
+
+  if(res.ok) alert('Bill submitted');
+  else alert('Server unreachable — saved locally');
+
+  renderRecentBills(); 
+  clearBill();
+
+  // ✅ TABLE STATUS
+  if(status === "Paid"){
+    await updateTableServer(table, "available");
+    renderTables();
+  }
+
+  if(status === "Pending"){
+    await updateTableServer(table, "reserved");
+    renderTables();
+  }
+}
+ // load pending
+async function loadPendingBillFromServer(tableNo){
+  try {
+    console.log("Loading pending for table:", tableNo);
+
+    const res = await fetch(`/api/billing/pending/${tableNo}`);
+    const data = await res.json();
+
+    console.log("Pending API Data:", data);
+
+    bill.items = [];
+
+    if(!data.items){
+      console.log("No pending items found");
+      renderBill();
+      return;
+    }
+
+    // ✅ ✅ ✅ DIRECT ARRAY USE KARO — STRING SPLIT NAHI
+    const itemsArray = JSON.parse(data.items);  // ✅ FIX HERE
+
+    console.log("Decoded Pending Items:", itemsArray);
+
+    itemsArray.forEach(it => {
+      bill.items.push({
+        id: it.id,
+        name: it.name,
+        price: parseFloat(it.price)
+      });
+    });
+
+    document.getElementById("bill_status").value = data.status;
+
+    console.log("✅ Final Bill Items:", bill.items);
+
+    renderBill();
+
+  } catch (err) {
+    console.error("❌ Pending load error:", err);
+  }
+}
+// ✅ AUTO OPEN BILLING / POS TAB
+qsa('.nav-item')[2].click();
+
+
+/* ---------- UI Handlers (modal safe using closest) ---------- */
+document.addEventListener('click', e=>{
+  const t = e.target.closest('#modalCancelBtn, #closeModal, #modalBackdrop');
+  if(t) closeModal();
+});
+
+/* Add item form handlers */
+qs('#addItemBtn').addEventListener('click', async ()=>{
+  const name = qs('#add_item_name').value.trim(); 
+  const cat = qs('#add_item_cat').value; 
+  const price = qs('#add_item_price').value;
+
+  if(!name || !price){ 
+    qs('#addMsg').textContent = 'Provide name and price'; 
+    return; 
+  }
+
+  qs('#addMsg').textContent = 'Adding...';
+
+  await addItemToServer({
+    item_name: name,
+    category: cat,
+    price: price
+  });
+
+  // ✅ MENU + POS DONO TURANT REFRESH HONGE
+  await renderMenuList();
+  renderBill();
+
+  qs('#addMsg').textContent = 'Added'; 
+  qs('#add_item_name').value=''; 
+  qs('#add_item_price').value='';
+
+  setTimeout(()=>qs('#addMsg').textContent='',1200);
+});
+
+qs('#resetAdd').addEventListener('click', ()=>{ qs('#add_item_name').value=''; qs('#add_item_price').value=''; });
+
+qs('#openAddItem').addEventListener('click', ()=> openModal());
+function openModal(){ qs('#addModal').style.display='block'; qs('#modal_item_name').value=''; qs('#modal_item_price').value=''; qs('#modalMsg').textContent=''; }
+function closeModal(){ qs('#addModal').style.display='none'; }
+qs('#modalAddBtn').addEventListener('click', async ()=>{
+  const name = qs('#modal_item_name').value.trim(); const cat = qs('#modal_item_cat').value; const price = qs('#modal_item_price').value;
+  if(!name || !price){ qs('#modalMsg').textContent = 'Fill name & price'; return; }
+  qs('#modalMsg').textContent = 'Adding...';
+  await addItemToServer({item_name:name,category:cat,price:price});
+  await renderMenuList(); closeModal();
+});
+qsa('#menuListPOS .add-btn').forEach(b => {
+    b.onclick = () => addItemToBill(
+        b.dataset.id,
+        b.dataset.name,
+        parseFloat(b.dataset.price)
+    );
+});
+
+
+/* Navigation */
+qsa('.nav-item').forEach(nav=>{ nav.addEventListener('click', ()=>{ qsa('.nav-item').forEach(n=>n.classList.remove('active')); nav.classList.add('active'); const target = nav.getAttribute('data-target'); qsa('.section').forEach(s=>s.style.display='none'); qs('#'+target).style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }); });
+
+/* Filters & search */
+qs('#menuFilter').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('#menuList .menu-item').forEach(tr=> tr.style.display = (q==='' || tr.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
+qs('#posSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('#menuListPOS .menu-item').forEach(mi=> mi.style.display = (q==='' || mi.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
+qs('#filterCategory').addEventListener('change', e=>{ const c=e.target.value; qsa('#menuListPOS .menu-item').forEach(mi=> mi.style.display = (c==='' || mi.querySelector('.cat').textContent === c) ? '' : 'none'); });
+qs('#globalSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('.menu-item').forEach(mi=> mi.style.display = (q==='' || mi.textContent.toLowerCase().includes(q)) ? '' : 'none'); qsa('.table-unit').forEach(tu=> tu.style.display = (q==='' || tu.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
+
+/* Other buttons */
+qs('#clearBillBtn').addEventListener('click', ()=> clearBill());
+qs('#printBillBtn').addEventListener('click', ()=> printBillPreview());
+qs('#submitBillBtn').addEventListener('click', ()=> submitBill());
+qs('#navCreateBill').addEventListener('click', ()=> { qsa('.nav-item')[2].click(); });
+qs('#navFindMenu').addEventListener('click', ()=> { qsa('.nav-item')[1].click(); qs('#menuFilter').focus(); });
+qs('#exportCSV').addEventListener('click', ()=> {
+  const items = JSON.parse(localStorage.getItem(LS.ITEMS) || '[]');
+  if(!items.length){ alert('No items'); return; }
+  const csv = ['id,name,category,price', ...items.map(i=>`${i.id},"${i.item_name.replace(/"/g,'""')}",${i.category},${i.price}`)].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='menu_items.csv'; a.click(); URL.revokeObjectURL(url);
+});
+document.getElementById("bill_table").addEventListener("change", ()=>{
+  const tableNo = document.getElementById("bill_table").value;
+  console.log("Table changed to:", tableNo);
+  loadPendingBillFromServer(tableNo);
+});
+
+
+
+
+/* Init */
+async function init(){ 
+  try{ 
+    await renderMenuList(); 
+    await renderTables(); 
+    populateTableSelect(); 
+    renderRecentBills(); 
+    renderBill(); 
+
+    // ✅ ✅ ✅ PAGE LOAD PAR AUTOMATIC PENDING LOAD
+    const tableNo = document.getElementById("bill_table").value;
+    if(tableNo){
+      console.log("Auto loading pending for table:", tableNo);
+      loadPendingBillFromServer(tableNo);
+    }
+
+  }catch(e){ 
+    console.error('Init error', e); 
+  } 
+}
+init();
+
+
+  </script>
+</body>
+</html>
