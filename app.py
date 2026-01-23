@@ -5,6 +5,7 @@ import os
 import time
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
+app.secret_key = "shahi_secret_123"
 
 # -------------------------
 # CONFIG
@@ -39,20 +40,18 @@ def fetch_all_menu():
 # -------------------------
 # LOGIN / LOGOUT
 # -------------------------
-@app.route('/')
-@app.route('/login', methods=['GET'])
-def login():
-    return render_template('login.html')
-
 @app.route('/login', methods=['POST'])
 def login_post():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
-    user = cur.fetchone()
-    cur.close()
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        user = cur.fetchone()
+        cur.close()
+    except Exception as e:
+        return f"Database Error: {e}"
 
     if user:
         session['user'] = username
@@ -60,10 +59,6 @@ def login_post():
     else:
         return render_template('login.html', error="Invalid credentials")
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
 
 # -------------------------
 # DASHBOARD PAGE
@@ -266,5 +261,5 @@ import os
 
 port = int(os.environ.get("PORT", 5000))
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=port)
 
