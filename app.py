@@ -1,11 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_cors import CORS
-from flask_mysqldb import MySQL
+import sqlite3
 import os
 import time
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 app.secret_key = "shahi_secret_123"
+
+def get_db_connection():
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 # -------------------------
 # CONFIG
@@ -18,7 +23,7 @@ app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD', '')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'hotel_shahi')
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
-mysql = MySQL(app)
+
 
 # -------------------------
 # HELPER: FETCH ALL MENU
@@ -46,10 +51,15 @@ def login_post():
     password = request.form.get('password')
 
     try:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        conn = sqlite3.connect("database.db")
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
         user = cur.fetchone()
-        cur.close()
+
+        conn.close()
+
     except Exception as e:
         return f"Database Error: {e}"
 
@@ -58,6 +68,7 @@ def login_post():
         return redirect(url_for('dashboard'))
     else:
         return render_template('login.html', error="Invalid credentials")
+
 
 
 # -------------------------
