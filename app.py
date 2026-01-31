@@ -12,6 +12,10 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
 # -------------------------
 # CONFIG
 # -------------------------
@@ -51,24 +55,18 @@ def login_post():
     password = request.form.get('password')
 
     try:
-        conn = sqlite3.connect("database.db")
-        conn.row_factory = sqlite3.Row
-        cur = conn.cursor()
-
-        cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
         user = cur.fetchone()
-
-        conn.close()
-
-    except Exception as e:
-        return f"Database Error: {e}"
+        cur.close()
+    except Exception:
+        return render_template('login.html', error="Database not connected")
 
     if user:
         session['user'] = username
         return redirect(url_for('dashboard'))
     else:
         return render_template('login.html', error="Invalid credentials")
-
 
 
 # -------------------------
@@ -79,6 +77,7 @@ def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
     return render_template('dashboard.html', username=session.get('user'))
+
 
 # -------------------------
 # MENU PAGE (OPTIONAL)
