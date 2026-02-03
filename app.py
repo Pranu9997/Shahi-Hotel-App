@@ -53,7 +53,7 @@ def login_post():
         conn = get_db()
         cur = conn.cursor()
         cur.execute(
-            "SELECT * FROM users WHERE username=? AND password=?",
+            "SELECT * FROM users WHERE username=%s AND password=%s",
             (username, password)
         )
         user = cur.fetchone()
