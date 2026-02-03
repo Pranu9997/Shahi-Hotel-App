@@ -21,52 +21,51 @@ def home():
 # -------------------------
 app.secret_key = os.getenv('FLASK_SECRET', 'shahi_secret_key')
 
-app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
-app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'root')
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD', '')
-app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'hotel_shahi')
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+def get_db():
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 
-# -------------------------
-# HELPER: FETCH ALL MENU
-# -------------------------
 def fetch_all_menu():
-    cur = mysql.connection.cursor()
+    conn = get_db()
+    cur = conn.cursor()
     cur.execute("SELECT id, item_name, category, price FROM menu ORDER BY id DESC")
     rows = cur.fetchall()
-    cur.close()
-
-    for r in rows:
-        if r.get('price') is not None:
-            try:
-                r['price'] = float(r['price'])
-            except:
-                pass
-    return rows
+    conn.close()
+    return [dict(r) for r in rows]
 
 # -------------------------
 # LOGIN / LOGOUT
 # -------------------------
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template('login.html')
+
 @app.route('/login', methods=['POST'])
 def login_post():
     username = request.form.get('username')
     password = request.form.get('password')
 
     try:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (username, password)
+        )
         user = cur.fetchone()
-        cur.close()
-    except Exception:
-        return render_template('login.html', error="Database not connected")
+        conn.close()
+    except Exception as e:
+        return render_template('login.html', error="DB Error")
 
     if user:
         session['user'] = username
         return redirect(url_for('dashboard'))
     else:
         return render_template('login.html', error="Invalid credentials")
+
 
 
 # -------------------------
@@ -86,8 +85,8 @@ def dashboard():
 def menu_page():
     if 'user' not in session:
         return redirect(url_for('login'))
-    items = fetch_all_menu()
-    return render_template('menu.html', items=items)
+    return render_template('menu.html', items=[])
+
 
 # -------------------------
 # ✅ API: MENU FETCH (FOR BILLING)
