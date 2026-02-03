@@ -1,16 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_cors import CORS
-import sqlite3
+import pymysql
 import os
 import time
+pymysql.install_as_MySQLdb()
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 app.secret_key = "shahi_secret_123"
 
-def get_db_connection():
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+app.config['MYSQL_HOST'] = 'sql12.freesqldatabase.com'
+app.config['MYSQL_USER'] = '	sql12816099'
+app.config['MYSQL_PASSWORD'] = '6VWzxBYCs4'
+app.config['MYSQL_DB'] = 'sql12816099'
+
+mysql = MySQL(app)
+
 
 @app.route('/')
 def home():
@@ -22,19 +26,16 @@ def home():
 app.secret_key = os.getenv('FLASK_SECRET', 'shahi_secret_key')
 
 def get_db():
-    conn = sqlite3.connect("database.db")
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
+    return mysql.connection
 
 def fetch_all_menu():
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("SELECT id, item_name, category, price FROM menu ORDER BY id DESC")
+    cur.execute("SELECT * FROM menu")
     rows = cur.fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
+    cur.close()
+    return rows
+
 
 # -------------------------
 # LOGIN / LOGOUT
