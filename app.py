@@ -40,33 +40,27 @@ def fetch_all_menu():
 # -------------------------
 # LOGIN / LOGOUT
 # -------------------------
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-@app.route('/login', methods=['POST'])
-def login_post():
-    username = request.form.get('username')
-    password = request.form.get('password')
-
-    try:
-        conn = get_db()
-        cur = conn.cursor()
+        cur = mysql.connection.cursor()
         cur.execute(
             "SELECT * FROM users WHERE username=%s AND password=%s",
             (username, password)
         )
         user = cur.fetchone()
-        conn.close()
-    except Exception as e:
-        return render_template('login.html', error="DB Error")
+        cur.close()
 
-    if user:
-        session['user'] = username
-        return redirect(url_for('dashboard'))
-    else:
-        return render_template('login.html', error="Invalid credentials")
+        if user:
+            session['user'] = username
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('login.html', error="Invalid credentials")
 
+    return render_template('login.html')
 
 
 # -------------------------
