@@ -1,20 +1,20 @@
+import pymysql
+pymysql.install_as_MySQLdb()
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_cors import CORS
-import pymysql
+from flask_mysqldb import MySQL
 import os
 import time
-pymysql.install_as_MySQLdb()
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 app.secret_key = "shahi_secret_123"
 
 app.config['MYSQL_HOST'] = 'sql12.freesqldatabase.com'
-app.config['MYSQL_USER'] = '	sql12816099'
+app.config['MYSQL_USER'] = 'sql12816099'
 app.config['MYSQL_PASSWORD'] = '6VWzxBYCs4'
 app.config['MYSQL_DB'] = 'sql12816099'
 
 mysql = MySQL(app)
-
 
 @app.route('/')
 def home():
