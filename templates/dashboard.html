@@ -591,19 +591,7 @@ const qsa = s => Array.from(document.querySelectorAll(s));
 function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 async function tryFetch(url, opts={}, timeout=3500){ const controller=new AbortController(); const id=setTimeout(()=>controller.abort(),timeout); try{ const res=await fetch(url,{...opts,signal:controller.signal}); clearTimeout(id); if(!res.ok) throw new Error('Bad response'); return res; }catch(e){ clearTimeout(id); throw e; } }
 
-/* Demo fallback menu (used if localStorage empty) */
-const demoItems = [
-  {id:1, item_name:'Shahi Mutton Biryani', category:'Non-Veg', price:240.00},
-  {id:2, item_name:'Paneer Butter Masala', category:'Veg', price:190.00},
-  {id:3, item_name:'Tandoori Roti', category:'Veg', price:20.00}
-];
 
-/* Force menu helper — run in console if items missing */
-window.forceMenu = function(){
-  localStorage.setItem(LS.ITEMS, JSON.stringify(demoItems));
-  alert('Menu reset done — reloading');
-  location.reload();
-};
 
 /* Data layer */
 async function getItems(){
@@ -801,13 +789,67 @@ function renderBill(){
 
 
 /* ---------- PRINT ---------- */
+
 function printBillPreview(){
   if(!bill.items.length){ alert('Add items first'); return; }
-  const table = qs('#bill_table').value; const status = qs('#bill_status').value; const date=new Date().toLocaleString('en-IN'); const billNo='INV'+Date.now();
-  const rows = bill.items.map((it,i)=>`<tr><td style="padding:8px">${i+1}</td><td style="padding:8px">${escapeHtml(it.name)}</td><td style="padding:8px;text-align:right">₹ ${it.price.toFixed(2)}</td></tr>`).join('');
-  const html = `<html><head><title>Invoice ${billNo}</title><style>body{font-family:Arial;padding:20px;color:#111}th,td{border-bottom:1px solid #ddd;padding:8px}th{background:#f7f7f7}</style></head><body><h2>Shahi Mutton Khanawal</h2><div>Bill No: ${billNo} | ${date}</div><div>Table: ${table} | Status: ${status}</div><table style="width:100%;border-collapse:collapse;margin-top:12px"><thead><tr><th>#</th><th>Item</th><th style="text-align:right">Price</th></tr></thead><tbody>${rows}</tbody></table><div style="text-align:right;margin-top:12px;font-weight:800">Total: ${qs('#grandTotal').textContent}</div><div style="margin-top:24px;font-size:12px;color:#666">Thank you for dining with us!</div></body></html>`;
-  const win = window.open('','_blank','width=800,height=800'); win.document.open(); win.document.write(html); win.document.close(); win.onload = ()=> { setTimeout(()=>{ try{ win.print(); win.close(); }catch(e){} },300); };
+
+  const table = qs('#bill_table').value;
+  const status = qs('#bill_status').value;
+  const date = new Date().toLocaleString('en-IN');
+
+  const billNo = bill.bill_no || ('INV'+Date.now());
+  bill.bill_no = billNo;
+
+  const rows = bill.items.map((it,i)=>`
+    <tr>
+      <td style="padding:8px">${i+1}</td>
+      <td style="padding:8px">${escapeHtml(it.name)}</td>
+      <td style="padding:8px;text-align:right">₹ ${it.price.toFixed(2)}</td>
+    </tr>`).join('');
+
+  const html = `<html>
+  <head>
+    <title>Invoice ${billNo}</title>
+    <style>
+      body{font-family:Arial;padding:20px;color:#111}
+      th,td{border-bottom:1px solid #ddd;padding:8px}
+      th{background:#f7f7f7}
+    </style>
+  </head>
+  <body>
+    <h2>Shahi Mutton Khanawal</h2>
+    <div>Bill No: ${billNo} | ${date}</div>
+    <div>Table: ${table} | Status: ${status}</div>
+
+    <table style="width:100%;border-collapse:collapse;margin-top:12px">
+      <thead>
+        <tr><th>#</th><th>Item</th>
+        <th style="text-align:right">Price</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div style="text-align:right;margin-top:12px;font-weight:800">
+      Total: ${qs('#grandTotal').textContent}
+    </div>
+
+    <div style="margin-top:24px;font-size:12px;color:#666">
+      Thank you for dining with us!
+    </div>
+  </body></html>`;
+
+  const win = window.open('','_blank','width=800,height=800');
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+
+  win.onload = ()=>{
+    setTimeout(()=>{
+      try{ win.print(); win.close(); }catch(e){}
+    },300);
+  };
 }
+
 /* ---------- SUBMIT BILL ---------- */
 async function submitBill(){
   if(bill.items.length === 0){ 
@@ -819,11 +861,10 @@ async function submitBill(){
   const status = qs('#bill_status').value;
   const totalText = qs('#grandTotal').textContent.replace('₹','').trim();
 
-  // ✅ ✅ ✅ IMPORTANT: items ko ARRAY me hi save kar rahe hain
   const payload = { 
     bill_no: 'INV' + Date.now(),
     table_number: table,
-    items: JSON.stringify(bill.items),   // 👈 ARRAY SAVE
+    items: JSON.stringify(bill.items),
     amount: parseFloat(totalText),
     status 
   };
@@ -834,7 +875,8 @@ async function submitBill(){
   const res = await submitBillToServer(payload);
 
   qs('#submitBillBtn').disabled = false;
-  qs('#submitBillBtn').innerHTML = '<i class="fa fa-paper-plane"></i> Generate & Submit';
+  qs('#submitBillBtn').innerHTML =
+    '<i class="fa fa-paper-plane"></i> Generate & Submit';
 
   if(res.ok) alert('Bill submitted');
   else alert('Server unreachable — saved locally');
@@ -842,7 +884,6 @@ async function submitBill(){
   renderRecentBills(); 
   clearBill();
 
-  // ✅ TABLE STATUS
   if(status === "Paid"){
     await updateTableServer(table, "available");
     renderTables();
@@ -853,7 +894,7 @@ async function submitBill(){
     renderTables();
   }
 }
- // load pending
+/* ---------- PENDING BILL LOAD ---------- */
 async function loadPendingBillFromServer(tableNo){
   try {
     console.log("Loading pending for table:", tableNo);
