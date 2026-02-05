@@ -28,13 +28,28 @@ app.secret_key = os.getenv('FLASK_SECRET', 'shahi_secret_key')
 def get_db():
     return mysql.connection
 
+#--------------------
+#  Menu connection
+#--------------------
 def fetch_all_menu():
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM menu")
+
+    cur.execute("SELECT id, item_name, category, price FROM menu")
     rows = cur.fetchall()
+
+    items = []
+    for r in rows:
+        items.append({
+            "id": r[0],
+            "item_name": r[1],
+            "category": r[2],
+            "price": float(r[3])
+        })
+
     cur.close()
-    return rows
+    return items
+
 
 
 # -------------------------
