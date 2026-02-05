@@ -360,21 +360,20 @@
       gap:6px;
   ">
   <span style="color:#d8c79f;font-size:14px;font-weight:600;">
-  Today’s Revenue
+    
+Today’s Revenue
 </span>
 
-      <span id="k_revenue" style="
-          font-size:30px;
-          font-weight:800;
-          color:#ffd884;
-          text-shadow:0 0 14px rgba(255,210,120,0.6);
-      ">—</span>
-  </div>
+<span id="k_revenue" style="
+    font-size:30px;
+    font-weight:800;
+    color:#ffd884;
+    text-shadow:0 0 14px rgba(255,210,120,0.6);
+">
+    ₹ {{ today_revenue }}
+</span>
+</div>
 
-<script>
-  document.getElementById("k_revenue").innerText = "₹ {{ today_revenue }}";
-
-</script>
 
   <!-- CARD 3 -->
   <div style="
