@@ -3,6 +3,7 @@ pymysql.install_as_MySQLdb()
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_cors import CORS
 from flask_mysqldb import MySQL
+from MySQLdb.cursors import DictCursor
 import os
 import time
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -115,7 +116,7 @@ def api_items():
 @app.route('/api/billing/pending/<int:table_no>', methods=['GET'])
 def get_pending_bill(table_no):
     try:
-        cur = mysql.connection.cursor(dictionary=True)
+        cur = mysql.connection.cursor(DictCursor)
 
         cur.execute("""
             SELECT items, status 
@@ -155,7 +156,7 @@ def api_menu_add():
         if not name or price is None:
             return jsonify({'error': 'Missing item name or price'}), 400
 
-        cur = mysql.connection.cursor(dictionary=True)
+        cur = mysql.connection.cursor(DictCursor)
         cur.execute(
             "INSERT INTO menu (item_name, category, price) VALUES (%s, %s, %s)",
             (name, category, float(price))
@@ -182,7 +183,7 @@ def api_menu_delete():
         if not item_id:
             return jsonify({'error': 'Missing id'}), 400
 
-        cur = mysql.connection.cursor(dictionary=True)
+        cur = mysql.connection.cursor(DictCursor)
         cur.execute("DELETE FROM menu WHERE id = %s", (item_id,))
         mysql.connection.commit()
         cur.close()
@@ -207,7 +208,7 @@ def api_billing():
         amount = float(data.get('amount', 0) or 0)
         status = data.get('status', 'Pending')
 
-        cur = mysql.connection.cursor(dictionary=True)
+        cur = mysql.connection.cursor(DictCursor)
         cur.execute(
             "INSERT INTO billing (bill_no, table_number, items, amount, status) VALUES (%s, %s, %s, %s, %s)",
             (bill_no, table_number, items_text, amount, status)
@@ -230,12 +231,12 @@ def api_billing():
         return jsonify({'ok': False, 'error': str(e)}), 500
 
 # -------------------------
-# ✅ ✅ ✅ API: TABLE STATUS
+# ✅ API: TABLE STATUS
 # -------------------------
 @app.route('/api/tables', methods=['GET'])
 def api_tables():
     try:
-        cur = mysql.connection.cursor(dictionary=True)
+        cur = mysql.connection.cursor(DictCursor)
         cur.execute("SELECT table_no, status FROM tables ORDER BY table_no ASC")
         rows = cur.fetchall()
         cur.close()
@@ -253,14 +254,20 @@ def api_tables_update(table_no):
         if status is None:
             return jsonify({'error': 'Missing status'}), 400
 
-        cur = mysql.connection.cursor(dictionary=True)
+        cur = mysql.connection.cursor(DictCursor)
         cur.execute("SELECT 1 FROM tables WHERE table_no = %s", (table_no,))
         exists = cur.fetchone()
 
         if exists:
-            cur.execute("UPDATE tables SET status = %s WHERE table_no = %s", (status, table_no))
+            cur.execute(
+                "UPDATE tables SET status = %s WHERE table_no = %s",
+                (status, table_no)
+            )
         else:
-            cur.execute("INSERT INTO tables (table_no, status) VALUES (%s, %s)", (table_no, status))
+            cur.execute(
+                "INSERT INTO tables (table_no, status) VALUES (%s, %s)",
+                (table_no, status)
+            )
 
         mysql.connection.commit()
         cur.close()
