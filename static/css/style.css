@@ -89,3 +89,37 @@ margin-bottom: 15%;
   text-decoration: underline;
   color: #e3dc0e;
 }
+
+/* ---------- MOBILE POS FIX ---------- */
+@media (max-width: 768px) {
+
+  /* sidebar hide */
+  .sidebar {
+    display: none;
+  }
+
+  /* content full screen */
+  .main-content {
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+  }
+
+  /* inputs & buttons mobile friendly */
+  input, select, button {
+    width: 100%;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  /* billing controls vertical */
+  .bill-controls {
+    flex-direction: column;
+  }
+
+  /* menu items grid */
+  .menu-items {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
