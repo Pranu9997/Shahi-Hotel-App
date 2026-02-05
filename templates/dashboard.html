@@ -360,7 +360,7 @@
       gap:6px;
   ">
   <span style="color:#d8c79f;font-size:14px;font-weight:600;">
-    
+
 Today’s Revenue
 </span>
 
@@ -693,7 +693,34 @@ async function renderTables(){
 
 function populateTableSelect(){ getTables().then(tables=>{ const sel = qs('#bill_table'); sel.innerHTML=''; tables.forEach(t=>{ const opt=document.createElement('option'); opt.value=t.table_no; opt.textContent='Table '+t.table_no+(t.status?(' ('+t.status+')'):''); sel.appendChild(opt); }); }); }
 
-function renderRecentBills(){ const recent = JSON.parse(localStorage.getItem(LS.BILLS)||'[]'); const tbody=qs('#recentBills'); tbody.innerHTML=''; if(!recent.length){ tbody.innerHTML='<tr><td colspan="3" class="muted">No recent bills</td></tr>'; return; } recent.slice(0,5).forEach(b=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${b.bill_no||'INV'}</td><td>${b.table_number||'-'}</td><td class="price-small">₹ ${parseFloat(b.amount||0).toFixed(2)}</td>`; tbody.appendChild(tr); }); qs('#k_orders').textContent = recent.length; qs('#k_revenue').textContent = '₹ ' + (recent.reduce((s,r)=>s + (parseFloat(r.amount)||0),0).toFixed(2) || '0.00'); qs('#k_pending').textContent = recent.filter(r=>r.status==='Pending' || r.status==='pending').length || 0; }
+function renderRecentBills(){
+  const recent = JSON.parse(localStorage.getItem(LS.BILLS)||'[]');
+  const tbody=qs('#recentBills');
+  tbody.innerHTML='';
+
+  if(!recent.length){
+    tbody.innerHTML='<tr><td colspan="3" class="muted">No recent bills</td></tr>';
+    return;
+  }
+
+  recent.slice(0,5).forEach(b=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${b.bill_no||'INV'}</td>
+      <td>${b.table_number||'-'}</td>
+      <td class="price-small">₹ ${parseFloat(b.amount||0).toFixed(2)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  qs('#k_orders').textContent = recent.length;
+
+  // Revenue Flask se aayega
+  // qs('#k_revenue').textContent = ...
+
+  qs('#k_pending').textContent =
+    recent.filter(r=>r.status==='Pending' || r.status==='pending').length || 0;
+}
+
 
 
 /* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
