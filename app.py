@@ -115,7 +115,7 @@ def api_items():
 @app.route('/api/billing/pending/<int:table_no>', methods=['GET'])
 def get_pending_bill(table_no):
     try:
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(dictionary=True)
 
         cur.execute("""
             SELECT items, status 
@@ -130,7 +130,7 @@ def get_pending_bill(table_no):
 
         if row:
             return jsonify({
-                "items": row["items"],   # JSON string
+                "items": row["items"],
                 "status": row["status"]
             }), 200
 
@@ -138,6 +138,7 @@ def get_pending_bill(table_no):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # -------------------------
 # ✅ API: MENU ADD
@@ -154,7 +155,7 @@ def api_menu_add():
         if not name or price is None:
             return jsonify({'error': 'Missing item name or price'}), 400
 
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(dictionary=True)
         cur.execute(
             "INSERT INTO menu (item_name, category, price) VALUES (%s, %s, %s)",
             (name, category, float(price))
@@ -168,6 +169,7 @@ def api_menu_add():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 # -------------------------
 # ✅ API: MENU DELETE
 # -------------------------
@@ -180,7 +182,7 @@ def api_menu_delete():
         if not item_id:
             return jsonify({'error': 'Missing id'}), 400
 
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(dictionary=True)
         cur.execute("DELETE FROM menu WHERE id = %s", (item_id,))
         mysql.connection.commit()
         cur.close()
@@ -205,7 +207,7 @@ def api_billing():
         amount = float(data.get('amount', 0) or 0)
         status = data.get('status', 'Pending')
 
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(dictionary=True)
         cur.execute(
             "INSERT INTO billing (bill_no, table_number, items, amount, status) VALUES (%s, %s, %s, %s, %s)",
             (bill_no, table_number, items_text, amount, status)
@@ -233,13 +235,14 @@ def api_billing():
 @app.route('/api/tables', methods=['GET'])
 def api_tables():
     try:
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(dictionary=True)
         cur.execute("SELECT table_no, status FROM tables ORDER BY table_no ASC")
         rows = cur.fetchall()
         cur.close()
         return jsonify(rows), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
 
 @app.route('/api/tables/<int:table_no>', methods=['POST'])
 def api_tables_update(table_no):
@@ -250,7 +253,7 @@ def api_tables_update(table_no):
         if status is None:
             return jsonify({'error': 'Missing status'}), 400
 
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(dictionary=True)
         cur.execute("SELECT 1 FROM tables WHERE table_no = %s", (table_no,))
         exists = cur.fetchone()
 
@@ -265,6 +268,7 @@ def api_tables_update(table_no):
 
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
+
 
 # -------------------------
 # HEALTH CHECK
