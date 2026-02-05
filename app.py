@@ -86,7 +86,24 @@ def login():
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
-    return render_template('dashboard.html', username=session.get('user'))
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT SUM(amount)
+        FROM billing
+        WHERE status = 'Paid'
+    """)
+
+    result = cur.fetchone()
+    cur.close()
+
+    today_revenue = result[0] if result and result[0] else 0
+
+    return render_template(
+        'dashboard.html',
+        username=session.get('user'),
+        today_revenue=today_revenue
+    )
 
 
 # -------------------------
