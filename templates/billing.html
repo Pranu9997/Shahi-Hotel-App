@@ -1,0 +1,1471 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Billing - Shahi Mutton Khanawal</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#060b16;
+      --bg-2:#0b1528;
+      --surface:rgba(255,255,255,0.06);
+      --surface-strong:rgba(255,255,255,0.1);
+      --border:rgba(255,255,255,0.14);
+      --text:#f8fafc;
+      --muted:#a6b0c3;
+      --blue:#3b82f6;
+      --blue-dark:#1d4ed8;
+      --green:#22c55e;
+      --gold:#facc15;
+      --danger:#ef4444;
+      --shadow:0 20px 40px rgba(1,6,18,0.45);
+    }
+    
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      padding:24px;
+      color:var(--text);
+      font-family:'Poppins',sans-serif;
+      background:
+        radial-gradient(1200px 500px at 8% -10%, rgba(59,130,246,0.2), transparent 60%),
+        radial-gradient(900px 500px at 100% 0%, rgba(34,197,94,0.1), transparent 60%),
+        linear-gradient(140deg, var(--bg-1), var(--bg-2));
+    }
+
+    h2{
+      margin:0 0 8px 0;
+      font-size:38px;
+      line-height:1.1;
+      letter-spacing:-0.02em;
+      font-weight:700;
+    }
+
+    a{
+      color:#f2c94c;
+      text-decoration:none;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .panel,
+    .bill-panel{
+      position:relative;
+      padding:18px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+      transition:transform 0.22s ease, border-color 0.22s ease;
+    }
+
+    .panel:hover,
+    .bill-panel:hover{
+      transform:translateY(-2px);
+      border-color:rgba(59,130,246,0.45);
+    }
+
+    .pos-layout{
+      display:grid;
+      grid-template-columns:minmax(0, 2fr) minmax(340px, 1fr);
+      gap:20px;
+    }
+
+    .menu-list{
+      margin-top:10px;
+      display:grid;
+      gap:14px;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    }
+
+    .menu-item{
+      position:relative;
+      overflow:hidden;
+      min-height:82px;
+      padding:13px 13px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:linear-gradient(150deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      transition:transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .menu-item::before{
+      content:"";
+      position:absolute;
+      inset:auto -40px -55px auto;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(59,130,246,0.24), transparent 70%);
+      pointer-events:none;
+    }
+
+    .menu-item:hover{
+      transform:translateY(-4px);
+      border-color:rgba(59,130,246,0.45);
+      box-shadow:0 12px 28px rgba(0,0,0,0.35);
+    }
+
+    .menu-item .name{
+      font-size:15px;
+      font-weight:700;
+      line-height:1.25;
+      max-width:145px;
+      word-break:break-word;
+    }
+
+    .menu-item .cat{
+      margin-top:3px;
+      font-size:12px;
+      font-weight:500;
+      color:var(--muted);
+    }
+
+    .price{
+      font-size:16px;
+      font-weight:700;
+      color:var(--gold);
+      letter-spacing:0.01em;
+    }
+
+    .price-small{
+      font-size:16px;
+      font-weight:700;
+      color:var(--gold);
+    }
+
+    .btn,
+    .add-btn,
+    .qty-btn{
+      border:none;
+      border-radius:10px;
+      color:#fff;
+      cursor:pointer;
+      font-weight:600;
+      transition:transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .btn{
+      padding:8px 13px;
+      background:linear-gradient(90deg,var(--blue),var(--blue-dark));
+      box-shadow:0 8px 18px rgba(29,78,216,0.36);
+    }
+
+    .add-btn{
+      width:38px;
+      height:32px;
+      padding:0;
+      font-size:17px;
+      background:linear-gradient(135deg,#3f8cff,#2563eb);
+      box-shadow:0 8px 20px rgba(59,130,246,0.35);
+    }
+
+    .btn.secondary{
+      background:linear-gradient(90deg,#16a34a,#22c55e);
+      box-shadow:0 8px 20px rgba(34,197,94,0.35);
+    }
+
+    .btn.ghost{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.2);
+      box-shadow:none;
+    }
+
+    .btn:hover,
+    .add-btn:hover,
+    .qty-btn:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.06);
+    }
+
+    .btn:active,
+    .add-btn:active,
+    .qty-btn:active{
+      transform:translateY(0) scale(0.96);
+    }
+
+    input,
+    select{
+      min-height:40px;
+      padding:8px 12px !important;
+      color:var(--text) !important;
+      border-radius:10px !important;
+      border:1px solid rgba(255,255,255,0.12) !important;
+      background:rgba(4,11,24,0.65) !important;
+      font-family:'Poppins',sans-serif;
+      font-size:14px;
+      outline:none;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    input::placeholder{
+      color:#95a2b8;
+    }
+
+    input:focus,
+    select:focus{
+      border-color:rgba(59,130,246,0.65) !important;
+      box-shadow:0 0 0 3px rgba(59,130,246,0.2);
+      background:rgba(6,15,30,0.88) !important;
+    }
+
+    select option{
+      background:#0a1222;
+      color:#fff;
+      font-weight:600;
+      padding:8px 10px;
+    }
+
+    select option:checked,
+    select option:hover{
+      background:#2563eb;
+      color:#fff;
+    }
+
+    #bill_table{
+      min-width:0;
+      width:100%;
+      font-weight:600;
+    }
+
+    #bill_table option{
+      background:#0a1222;
+      color:#dbe8ff;
+    }
+
+    #bill_table option.table-available{
+      color:#86efac;
+    }
+
+    #bill_table option.table-reserved{
+      color:#fde047;
+    }
+
+    #bill_table option.table-ondine{
+      color:#fca5a5;
+    }
+
+    #bill_status{
+      min-width:0;
+      width:120px;
+      margin-right:0;
+      font-weight:700;
+      color:#e2e8f0 !important;
+      transition:border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .bill-meta-row{
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr) auto 120px;
+      gap:8px;
+      align-items:center;
+    }
+
+    .bill-meta-row label{
+      min-width:auto !important;
+      white-space:nowrap;
+    }
+
+    .gst-toggle{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      color:#cbd5e1;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .gst-toggle input{
+      min-height:auto;
+      width:14px;
+      height:14px;
+      margin:0;
+      padding:0 !important;
+      accent-color:#22c55e;
+    }
+
+    #bill_status option{
+      background:#0a1222;
+      color:#e2e8f0;
+      font-weight:700;
+    }
+
+    #bill_status option.status-opt-paid{
+      color:#86efac;
+    }
+
+    #bill_status option.status-opt-pending{
+      color:#fde047;
+    }
+
+    #bill_status.status-paid{
+      color:#86efac !important;
+      border-color:rgba(34,197,94,0.45) !important;
+    }
+
+    #bill_status.status-pending{
+      color:#fde047 !important;
+      border-color:rgba(250,204,21,0.45) !important;
+    }
+
+    .bill-items{
+      margin-top:12px;
+      max-height:330px;
+      padding-right:4px;
+      overflow:auto;
+    }
+
+    .bill-items::-webkit-scrollbar{
+      width:7px;
+    }
+
+    .bill-items::-webkit-scrollbar-thumb{
+      border-radius:999px;
+      background:linear-gradient(180deg,#60a5fa,#2563eb);
+    }
+
+    .bill-row{
+      margin-bottom:10px;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      animation:slideIn 0.25s ease;
+    }
+
+    .bill-row:hover{
+      border-color:rgba(59,130,246,0.45);
+    }
+
+    .bill-totals{
+      margin-top:12px;
+      padding:14px 12px !important;
+      border-radius:14px !important;
+      border:1px solid rgba(255,255,255,0.12) !important;
+      background:
+        linear-gradient(100deg, rgba(59,130,246,0.14), rgba(250,204,21,0.1)) !important;
+    }
+
+    #grandTotal{
+      color:var(--green);
+      text-shadow:0 0 10px rgba(34,197,94,0.38);
+    }
+
+    .table-map{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+      gap:12px;
+    }
+
+    .table-unit{
+      padding:13px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.1);
+      background:linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      text-align:center;
+      transition:transform 0.18s ease, border-color 0.2s ease;
+    }
+
+    .table-unit:hover{
+      transform:translateY(-3px);
+    }
+
+    .table-unit.available{
+      border-color:rgba(34,197,94,0.8);
+    }
+
+    .table-unit.reserved{
+      border-color:rgba(250,204,21,0.85);
+    }
+
+    .table-unit.ondine{
+      border-color:rgba(239,68,68,0.85);
+    }
+
+
+
+
+
+    .qty-btn{
+      margin:0 4px;
+      padding:3px 8px;
+      font-size:13px;
+      background:linear-gradient(120deg,#3b82f6,#2563eb);
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:grid;
+      place-items:center;
+      background:rgba(4,8,16,0.7);
+      backdrop-filter:blur(6px);
+    }
+
+    .modal{
+      width:min(92vw, 460px);
+      padding:18px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.17);
+      background:linear-gradient(165deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+      box-shadow:0 24px 50px rgba(0,0,0,0.5);
+    }
+
+    .glass-popup{
+      backdrop-filter:blur(12px);
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.2);
+    }
+
+    @keyframes slideIn{
+      from{
+        opacity:0;
+        transform:translateY(8px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media (max-width:1120px){
+      .pos-layout{
+        grid-template-columns:1fr;
+      }
+
+      .bill-panel{
+        margin-top:2px;
+      }
+    }
+
+    @media (max-width:768px){
+      body{
+        padding:14px;
+      }
+
+      h2{
+        font-size:29px;
+      }
+
+      .menu-list{
+        grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+      }
+
+  
+    }
+  </style>
+</head>
+<body>
+
+
+ <section id="panelPOS" class="panel section" style="display:block">
+        <h2>Billing / POS</h2>
+        <div class="muted">Select menu items on the left, review & submit on right.</div>
+
+        <div class="pos-layout" style="margin-top:12px">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-weight:700">Menu</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="posSearch" placeholder="Search menu..." style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
+                <select id="filterCategory" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
+                  <option value="">All</option><option>Veg</option><option>Non-Veg</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="menu-list" id="menuListPOS">
+            </div>
+          </div>
+
+          <div class="bill-panel">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700">Current Bill</div>
+              <div class="muted">GST optional (5%)</div>
+            </div>
+
+            <div class="bill-meta-row">
+              <label style="min-width:70px">Table</label>
+              <select id="bill_table" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff" name="table_number"></select>
+              <label style="min-width:70px">Status</label>
+              <select id="bill_status" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff" name="status">
+                <option>Paid</option><option>Pending</option>
+              </select>
+            </div>
+
+            <div class="bill-items" id="billItems">
+              <div id="billEmpty" style="text-align:center;color:var(--muted);padding:40px 10px">No items added. Click <strong>+</strong> on left to add items.</div>
+            </div>
+
+            <div class="bill-totals" style="background:linear-gradient(90deg, rgba(212,175,55,0.03), rgba(255,255,119,0.02));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+              <div style="display:flex;justify-content:space-between"><div class="muted">Subtotal</div><div id="subtotal" class="price-small">₹ 0.00</div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="muted" style="display:flex;align-items:center;gap:10px">
+                  <span id="gstLabel">GST (5%)</span>
+                  <label class="gst-toggle">
+                    <input type="checkbox" id="applyGst" checked>
+                    <span>Apply</span>
+                  </label>
+                </div>
+                <div id="gst" class="price-small">&#8377; 0.00</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-weight:800;margin-top:8px"><div>Total</div><div id="grandTotal" class="price-small">₹ 0.00</div></div>
+
+              <div style="display:flex;gap:10px;margin-top:12px">
+                <button class="btn" id="submitBillBtn"><i class="fa fa-paper-plane"></i> Generate & Submit</button>
+                <button class="btn ghost" id="clearBillBtn"><i class="fa fa-trash"></i> Clear</button>
+                <button class="btn secondary" id="printBillBtn"><i class="fa fa-print"></i> Print</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+      <section id="panelMenu" class="panel section" style="display:none">
+        <h2>Menu Management</h2>
+        <div class="muted">Add new items, edit or delete existing items.</div>
+
+        <div style="display:flex;gap:18px;margin-top:12px;align-items:flex-start">
+          <div style="width:320px" class="panel">
+            <div style="font-weight:700">Add Item</div>
+            <div style="margin-top:10px">
+              <label>Item name</label>
+              <input id="add_item_name" placeholder="e.g. Shahi Mutton Biryani">
+              <label style="margin-top:8px">Category</label>
+              <select id="add_item_cat">
+                <option>Non-Veg</option>
+                <option>Veg</option>
+              </select>
+              <label style="margin-top:8px">Price (₹)</label>
+              <input id="add_item_price" type="number" step="0.01" placeholder="e.g. 240.00">
+              <div style="display:flex;gap:10px;margin-top:10px">
+                <button class="btn" id="addItemBtn"><i class="fa fa-plus"></i> Add Item</button>
+                <button class="btn ghost" id="resetAdd">Reset</button>
+              </div>
+              <div id="addMsg" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+            </div>
+          </div>
+
+          <div style="flex:1" class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div style="font-weight:700">Menu Items</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="menuFilter" placeholder="Search menu..." style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
+                <div class="muted">Total: <span id="menuCount">0</span></div>
+              </div>
+            </div>
+
+            <div class="menu-list" id="menuList">
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+     
+      <section id="panelTables" class="panel section" style="display:none">
+        <h2>Tables</h2>
+        <div class="muted">Click a table to toggle status (Available → Reserved → On-dine)</div>
+
+        <div style="margin-top:12px" class="table-map" id="tableMap"></div>
+      </section>
+
+
+</body>
+
+
+      <div id="addModal" style="display:none">
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700">Add New Item</div>
+          <button class="btn ghost" id="closeModal"><i class="fa fa-times"></i></button>
+        </div>
+        <div style="margin-top:12px">
+          <label>Item name</label>
+          <input id="modal_item_name" placeholder="e.g. Shahi Mutton Biryani">
+          <label style="margin-top:8px">Category</label>
+          <select id="modal_item_cat"><option>Non-Veg</option><option>Veg</option></select>
+          <label style="margin-top:8px">Price (₹)</label>
+          <input id="modal_item_price" type="number" step="0.01" placeholder="e.g. 240.00">
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn" id="modalAddBtn">Add</button>
+            <button class="btn ghost" id="modalCancelBtn">Cancel</button>
+          </div>
+          <div id="modalMsg" style="margin-top:8px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<script>
+
+
+const API = { items:'/api/items', addItem:'/api/menu/add', billing:'/api/billing', tables:'/api/tables' };
+const LS = { ITEMS:'smk_items_v2', BILLS:'smk_bills_v2', TABLES:'smk_tables_v2' };
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
+function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function tryFetch(url, opts={}, timeout=3500){ const controller=new AbortController(); const id=setTimeout(()=>controller.abort(),timeout); try{ const res=await fetch(url,{...opts,signal:controller.signal}); clearTimeout(id); if(!res.ok) throw new Error('Bad response'); return res; }catch(e){ clearTimeout(id); throw e; } }
+
+
+
+/* Data layer */
+async function getItems(){
+
+  // direct localStorage se menu lo
+  const local = localStorage.getItem(LS.ITEMS);
+
+  if(local){
+    return JSON.parse(local);
+  }
+
+  return []; // agar menu empty ho
+}
+function saveItemsLocal(items){ localStorage.setItem(LS.ITEMS, JSON.stringify(items)); }
+async function addItemToServer(payload){
+  try{ const r=await tryFetch(API.addItem,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const json=await r.json(); if(json && json.items) saveItemsLocal(json.items); return json.items || json; }
+  catch(e){ const arr=JSON.parse(localStorage.getItem(LS.ITEMS)||'[]'); const id=arr.length?Math.max(...arr.map(x=>x.id))+1:1; arr.unshift({id,item_name:payload.item_name,category:payload.category,price:parseFloat(payload.price)}); localStorage.setItem(LS.ITEMS, JSON.stringify(arr)); return arr; }
+}
+async function submitBillToServer(payload){
+  try{ const r=await tryFetch(API.billing,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},4500); const json=await r.json(); saveBillLocal(json||payload); return {ok:true, data:json||payload}; } catch(e){ saveBillLocal(payload); return {ok:false, err:e}; }
+}
+function saveBillLocal(bill){ const bills=JSON.parse(localStorage.getItem(LS.BILLS)||'[]'); bills.unshift({...bill, created_at:new Date().toISOString()}); localStorage.setItem(LS.BILLS, JSON.stringify(bills.slice(0,20))); }
+
+async function getTables(){
+  try{ const r=await tryFetch(API.tables); const data=await r.json(); localStorage.setItem(LS.TABLES, JSON.stringify(data)); return data; }
+  catch(e){ const local=localStorage.getItem(LS.TABLES); if(local) return JSON.parse(local); const t=Array.from({length:10},(_,i)=>({table_no:i+1,status:'available'})); localStorage.setItem(LS.TABLES, JSON.stringify(t)); return t; }
+}
+async function updateTableServer(table_no,status){
+  try{ const r=await tryFetch(API.tables + '/' + table_no,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})}); const json=await r.json(); const tables=JSON.parse(localStorage.getItem(LS.TABLES)||'[]'); const idx=tables.findIndex(x=>x.table_no==table_no); if(idx>-1){ tables[idx].status=status; localStorage.setItem(LS.TABLES, JSON.stringify(tables)); } return json; }
+  catch(e){ const tables=JSON.parse(localStorage.getItem(LS.TABLES)||'[]'); const idx=tables.findIndex(x=>x.table_no==table_no); if(idx>-1){ tables[idx].status=status; localStorage.setItem(LS.TABLES, JSON.stringify(tables)); } return null; }
+}
+
+/* RENDERERS */
+async function renderMenuList(){
+  const items = await getItems();
+  const list = qs('#menuList'); 
+  const posList = qs('#menuListPOS');
+
+  // ✅ Safety check
+  if(!list || !posList){
+    console.warn("menuList or menuListPOS not found");
+    return;
+  }
+
+  list.innerHTML = ''; 
+  posList.innerHTML = '';
+
+  items.forEach(it=>{
+    const html = `
+      <div class="menu-item">
+        <div class="meta">
+          <div class="name">${escapeHtml(it.item_name)}</div>
+          <div class="cat">${escapeHtml(it.category)}</div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="price">₹ ${parseFloat(it.price).toFixed(2)}</div>
+
+          <button 
+            class="add-btn" 
+            data-id="${it.id}" 
+            data-name="${escapeHtml(it.item_name)}" 
+            data-price="${it.price}">
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+    list.insertAdjacentHTML('beforeend', html);
+    posList.insertAdjacentHTML('beforeend', html);
+  });
+
+  // ✅ MENU SECTION ke + button ke liye
+  qsa('#menuList .add-btn').forEach(b => 
+    b.addEventListener('click', e => {
+      const id = e.currentTarget.dataset.id;
+      const name = e.currentTarget.dataset.name;
+      const price = parseFloat(e.currentTarget.dataset.price);
+      addItemToBill(id, name, price);
+    })
+  );
+
+  // ✅ ✅ ✅ POS SECTION ke + button ke liye (MAIN FIX)
+  qsa('#menuListPOS .add-btn').forEach(b => 
+    b.addEventListener('click', e => {
+      const id = e.currentTarget.dataset.id;
+      const name = e.currentTarget.dataset.name;
+      const price = parseFloat(e.currentTarget.dataset.price);
+      addItemToBill(id, name, price);
+    })
+  );
+
+  qs('#menuCount').textContent = items.length;
+}
+
+
+async function renderTables(){
+  const tables = await getTables(); const wrap = qs('#tableMap'); wrap.innerHTML = '';
+  tables.forEach(t=>{
+    const d=document.createElement('div'); d.className='table-unit '+(t.status||'available'); d.dataset.table=t.table_no; d.innerHTML=`<div class="table-label">Table ${t.table_no}</div><div class="table-sub">${t.status}</div>`;
+    d.addEventListener('click', async ()=>{ let next='reserved'; if(d.classList.contains('available')) next='reserved'; else if(d.classList.contains('reserved')) next='ondine'; else next='available'; d.classList.remove('available','reserved','ondine'); d.classList.add(next); d.querySelector('.table-sub').textContent=next; await updateTableServer(t.table_no,next); populateTableSelect(); });
+    wrap.appendChild(d);
+  });
+  const occ = tables.filter(x=>x.status==='ondine').length;
+  const kt = qs('#k_tables');
+
+if(kt){
+   kt.textContent = `${occ} / ${tables.length}`;
+}
+}
+
+function populateTableSelect(){ getTables().then(tables=>{ const sel = qs('#bill_table'); sel.innerHTML=''; tables.forEach(t=>{ const opt=document.createElement('option'); const status=(t.status||'available').toLowerCase(); opt.value=t.table_no; opt.textContent='Table '+t.table_no+(status?(' ('+status+')'):''); opt.className='table-'+status; sel.appendChild(opt); }); }); }
+
+function renderRecentBills(){
+  const recent = JSON.parse(localStorage.getItem(LS.BILLS)||'[]');
+  const tbody=qs('#recentBills');
+  if(!tbody) return;
+  tbody.innerHTML='';
+
+  if(!recent.length){
+    tbody.innerHTML='<tr><td colspan="3" class="muted">No recent bills</td></tr>';
+    return;
+  }
+
+  recent.slice(0,5).forEach(b=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${b.bill_no||'INV'}</td>
+      <td>${b.table_number||'-'}</td>
+      <td class="price-small">₹ ${parseFloat(b.amount||0).toFixed(2)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  qs('#k_orders').textContent = recent.length;
+
+  // Revenue Flask se aayega
+  // qs('#k_revenue').textContent = ...
+
+  qs('#k_pending').textContent =
+    recent.filter(r=>r.status==='Pending' || r.status==='pending').length || 0;
+}
+
+
+
+/* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
+/* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
+
+let bill = { items: [] };
+
+function isGstApplied(){
+  const gstToggle = qs('#applyGst');
+  return !gstToggle || gstToggle.checked;
+}
+
+async function addItemToBill(id, name, price){
+  bill.items.push({
+    id: id,
+    name: name,
+    price: parseFloat(price)
+  });
+
+  // ✅ AUTO TABLE STATUS = ONDINE (order start hote hi)
+  const tableNo = document.getElementById("bill_table").value;
+ await updateTableServer(tableNo, "ondine");
+renderTables();   // 👈 UI instantly update
+
+
+  renderBill();
+}
+
+
+function removeItem(index){
+  bill.items.splice(index, 1);
+  renderBill();
+}
+
+function clearBill(){
+  bill.items = [];
+  renderBill();
+}
+
+
+function renderBill(){
+  const billItems = document.getElementById("billItems");
+
+  if(!billItems){
+    console.warn("Bill UI not ready yet");
+    return;
+  }
+
+  // ✅ bill empty message ko remove/recreate safely
+  let billEmpty = document.getElementById("billEmpty");
+
+  billItems.innerHTML = "";
+
+  if(bill.items.length === 0){
+    if(!billEmpty){
+      billEmpty = document.createElement("div");
+      billEmpty.id = "billEmpty";
+      billEmpty.style.textAlign = "center";
+      billEmpty.style.color = "#9ca3af";
+      billEmpty.style.padding = "40px 10px";
+      billEmpty.innerHTML = 'No items added. Click <strong>+</strong> on left to add items.';
+      billItems.appendChild(billEmpty);
+    }
+    return;
+  }
+
+  let subtotal = 0;
+
+  bill.items.forEach((item, index)=>{
+    subtotal += item.price;
+
+    billItems.innerHTML += `
+      <div class="bill-row">
+        <div>
+          <div style="font-weight:700">${item.name}</div>
+          <div class="muted" style="font-size:12px">ID: ${item.id}</div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="price-small">₹ ${item.price.toFixed(2)}</div>
+          <button class="btn ghost" onclick="removeItem(${index})" style="margin-top:6px">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>`;
+  });
+
+  const gst = isGstApplied() ? (subtotal * 0.05) : 0;
+  const total = subtotal + gst;
+
+  document.getElementById("subtotal").textContent = "₹ " + subtotal.toFixed(2);
+  document.getElementById("gst").textContent = "₹ " + gst.toFixed(2);
+  document.getElementById("grandTotal").textContent = "₹ " + total.toFixed(2);
+}
+
+
+
+
+/* ---------- PRINT ---------- */
+
+function printBillPreview(){
+  if(!bill.items.length){ alert('Add items first'); return; }
+
+  const table = qs('#bill_table').value;
+  const status = qs('#bill_status').value;
+  const now = new Date();
+  const date = now.toLocaleString('en-IN');
+  const gstApplied = isGstApplied();
+
+  const billNo = bill.bill_no || ('INV'+Date.now());
+  bill.bill_no = billNo;
+
+  const subtotalValue = bill.items.reduce((sum, it) => {
+    const qty = Number(it.qty || 1);
+    const price = Number(it.price || 0);
+    return sum + (qty * price);
+  }, 0);
+  const gstValue = gstApplied ? (subtotalValue * 0.05) : 0;
+  const grandTotalValue = subtotalValue + gstValue;
+
+  const rows = bill.items.map((it,i)=>{
+    const qty = Number(it.qty || 1);
+    const unit = Number(it.price || 0);
+    const lineTotal = qty * unit;
+    return `
+    <tr>
+      <td>${i+1}</td>
+      <td>${escapeHtml(it.name)}</td>
+      <td class="num">${qty}</td>
+      <td class="num">&#8377; ${unit.toFixed(2)}</td>
+      <td class="num"><strong>&#8377; ${lineTotal.toFixed(2)}</strong></td>
+    </tr>`;
+  }).join('');
+
+  const html = `<html>
+  <head>
+    <title>Invoice ${billNo}</title>
+    <style>
+      *{box-sizing:border-box}
+      body{
+        font-family:"Segoe UI",Arial,sans-serif;
+        margin:0;
+        padding:24px;
+        color:#111;
+        background:#f5f6f8;
+      }
+      .invoice{
+        max-width:820px;
+        margin:0 auto;
+        background:#fff;
+        border:1px solid #d9dee7;
+        border-radius:14px;
+        overflow:hidden;
+      }
+      .header{
+        padding:18px 22px;
+        background:linear-gradient(120deg,#101828,#1d2939);
+        color:#fff;
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+      }
+      .brand{
+        font-size:22px;
+        font-weight:800;
+      }
+      .meta{
+        margin-top:4px;
+        font-size:13px;
+        opacity:.9;
+      }
+      .bill-badge{
+        text-align:right;
+      }
+      .bill-badge .label{
+        font-size:11px;
+        letter-spacing:.12em;
+        opacity:.85;
+      }
+      .bill-badge .value{
+        margin-top:4px;
+        font-size:28px;
+        font-weight:900;
+        color:#ffd166;
+      }
+      .section{
+        padding:16px 22px 0;
+      }
+      .chips{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+      }
+      .chip{
+        padding:6px 10px;
+        border-radius:999px;
+        border:1px solid #d8dee9;
+        font-size:12px;
+      }
+      table{
+        width:calc(100% - 44px);
+        margin:14px 22px 0;
+        border-collapse:collapse;
+        font-size:14px;
+      }
+      th,td{
+        border-bottom:1px solid #eceff4;
+        padding:10px 8px;
+        text-align:left;
+      }
+      th{
+        background:#f8fafc;
+        font-size:12px;
+        letter-spacing:.05em;
+        text-transform:uppercase;
+        color:#475467;
+      }
+      .num{
+        text-align:right;
+        white-space:nowrap;
+      }
+      .totals{
+        display:flex;
+        justify-content:flex-end;
+        padding:14px 22px 20px;
+      }
+      .totals table{
+        width:320px;
+        margin:0;
+      }
+      .totals td{
+        border-bottom:none;
+        padding:6px 0;
+      }
+      .grand td{
+        padding-top:10px;
+        border-top:1px dashed #cfd8e3;
+        font-size:18px;
+        font-weight:800;
+      }
+      .footer{
+        border-top:1px solid #e5e7eb;
+        padding:12px 22px 18px;
+        color:#667085;
+        font-size:12px;
+        display:flex;
+        justify-content:space-between;
+        gap:12px;
+        flex-wrap:wrap;
+      }
+      @media print{
+        body{background:#fff;padding:0}
+        .invoice{border:none;border-radius:0;max-width:none}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice">
+      <div class="header">
+        <div>
+          <div class="brand">Shahi Mutton Khanawal</div>
+          <div class="meta">Premium Invoice</div>
+          <div class="meta">${date}</div>
+        </div>
+        <div class="bill-badge">
+          <div class="label">BILL NUMBER</div>
+          <div class="value">${billNo}</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="chips">
+          <div class="chip">Table: <strong>${table || "-"}</strong></div>
+          <div class="chip">Status: <strong>${escapeHtml(status || "-")}</strong></div>
+          <div class="chip">GST: <strong>${gstApplied ? "Applied (5%)" : "Not Applied"}</strong></div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th class="num">Qty</th>
+            <th class="num">Unit Price</th>
+            <th class="num">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+
+      <div class="totals">
+        <table>
+          <tr>
+            <td>Subtotal</td>
+            <td class="num">&#8377; ${subtotalValue.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>GST (5%)</td>
+            <td class="num">&#8377; ${gstValue.toFixed(2)}</td>
+          </tr>
+          <tr class="grand">
+            <td>Grand Total</td>
+            <td class="num">&#8377; ${grandTotalValue.toFixed(2)}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="footer">
+        <div>Thank you for dining with us.</div>
+        <div>Use Print dialog to save as PDF.</div>
+      </div>
+    </div>
+  </body></html>`;
+
+  const win = window.open('','_blank','width=900,height=900');
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+
+  win.onload = ()=>{
+    setTimeout(()=>{
+      try{ win.print(); win.close(); }catch(e){}
+    },350);
+  };
+}
+
+/* ---------- SUBMIT BILL ---------- */
+async function submitBill(){
+  if(bill.items.length === 0){
+const sound = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+sound.volume = 1;
+sound.play().catch(e => console.log("Sound blocked"));
+  Swal.fire({
+    icon: "warning",
+    title: "NO ITEMS ADDED",
+    text: "Please add items before submitting 🍽️",
+    background: "#0b0f19",
+    color: "#00ffcc",
+    confirmButtonColor: "#00ffcc",
+    confirmButtonText: "OK"
+  });
+
+  return;
+}
+
+  const table = qs('#bill_table').value;
+  const status = qs('#bill_status').value;
+  const totalText = qs('#grandTotal').textContent.replace(/[^\d.]/g,'').trim();
+  const gstText = qs('#gst').textContent.replace(/[^\d.]/g,'').trim();
+  const gstApplied = isGstApplied();
+
+  const payload = { 
+    bill_no: 'INV' + Date.now(),
+    table_number: table,
+    items: JSON.stringify(bill.items),
+    amount: parseFloat(totalText),
+    status,
+    gst_applied: gstApplied,
+    gst_amount: parseFloat(gstText || "0")
+  };
+
+  qs('#submitBillBtn').disabled = true;
+  qs('#submitBillBtn').textContent = 'Submitting...';
+
+  const res = await submitBillToServer(payload);
+
+  qs('#submitBillBtn').disabled = false;
+  qs('#submitBillBtn').innerHTML =
+    '<i class="fa fa-paper-plane"></i> Generate & Submit';
+
+Swal.fire({
+  title: "Bill Completed ✔",
+  text: "Order processed successfully",
+  icon: "success",
+  backdrop: "rgba(0,0,0,0.6)",
+  background: "rgba(255,255,255,0.1)",
+  color: "#fff",
+  customClass: {
+    popup: "glass-popup"
+  },
+  showConfirmButton:false,
+  timer:1500
+});
+  renderRecentBills(); 
+  clearBill();
+
+  if(status === "Paid"){
+    await updateTableServer(table, "available");
+    renderTables();
+  }
+
+  if(status === "Pending"){
+    await updateTableServer(table, "reserved");
+    renderTables();
+  }
+}
+/* ---------- PENDING BILL LOAD ---------- */
+async function loadPendingBillFromServer(tableNo){
+  try {
+    console.log("Loading pending for table:", tableNo);
+
+    const res = await fetch(`/api/billing/pending/${tableNo}`);
+    const data = await res.json();
+
+    console.log("Pending API Data:", data);
+
+    bill.items = [];
+
+    if(!data.items){
+      console.log("No pending items found");
+      renderBill();
+      return;
+    }
+
+    // ✅ ✅ ✅ DIRECT ARRAY USE KARO — STRING SPLIT NAHI
+    const itemsArray = JSON.parse(data.items);  // ✅ FIX HERE
+
+    console.log("Decoded Pending Items:", itemsArray);
+
+    itemsArray.forEach(it => {
+      bill.items.push({
+        id: it.id,
+        name: it.name,
+        price: parseFloat(it.price)
+      });
+    });
+
+    document.getElementById("bill_status").value = data.status;
+
+    console.log("✅ Final Bill Items:", bill.items);
+
+    renderBill();
+
+  } catch (err) {
+    console.error("❌ Pending load error:", err);
+  }
+}
+
+/* ---------- UI Handlers (modal safe using closest) ---------- */
+document.addEventListener('click', e=>{
+  const t = e.target.closest('#modalCancelBtn, #closeModal, #modalBackdrop');
+  if(t) closeModal();
+});
+
+/* Add item form handlers */
+qs('#addItemBtn').addEventListener('click', async ()=>{
+  const name = qs('#add_item_name').value.trim(); 
+  const cat = qs('#add_item_cat').value; 
+  const price = qs('#add_item_price').value;
+
+  if(!name || !price){ 
+    qs('#addMsg').textContent = 'Provide name and price'; 
+    return; 
+  }
+
+  qs('#addMsg').textContent = 'Adding...';
+
+  await addItemToServer({
+    item_name: name,
+    category: cat,
+    price: price
+  });
+
+  // ✅ MENU + POS DONO TURANT REFRESH HONGE
+  await renderMenuList();
+  renderBill();
+
+  qs('#addMsg').textContent = 'Added'; 
+  qs('#add_item_name').value=''; 
+  qs('#add_item_price').value='';
+
+  setTimeout(()=>qs('#addMsg').textContent='',1200);
+});
+
+qs('#resetAdd').addEventListener('click', ()=>{ qs('#add_item_name').value=''; qs('#add_item_price').value=''; });
+
+const openBtn = qs('#openAddItem');
+if(openBtn){
+  openBtn.addEventListener('click', ()=> openModal());
+}
+function openModal(){ qs('#addModal').style.display='block'; qs('#modal_item_name').value=''; qs('#modal_item_price').value=''; qs('#modalMsg').textContent=''; }
+function closeModal(){ qs('#addModal').style.display='none'; }
+qs('#modalAddBtn').addEventListener('click', async ()=>{
+  const name = qs('#modal_item_name').value.trim(); const cat = qs('#modal_item_cat').value; const price = qs('#modal_item_price').value;
+  if(!name || !price){ qs('#modalMsg').textContent = 'Fill name & price'; return; }
+  qs('#modalMsg').textContent = 'Adding...';
+  await addItemToServer({item_name:name,category:cat,price:price});
+  await renderMenuList(); closeModal();
+});
+qsa('#menuListPOS .add-btn').forEach(b => {
+    b.onclick = () => addItemToBill(
+        b.dataset.id,
+        b.dataset.name,
+        parseFloat(b.dataset.price)
+    );
+});
+
+function syncBillStatusStyle(){
+  const statusSel = qs('#bill_status');
+  if(!statusSel) return;
+  const v = (statusSel.value || '').toLowerCase();
+  statusSel.classList.remove('status-paid','status-pending');
+  if(v === 'paid') statusSel.classList.add('status-paid');
+  if(v === 'pending') statusSel.classList.add('status-pending');
+}
+
+
+/* Navigation */
+qsa('.nav-item').forEach(nav=>{ nav.addEventListener('click', ()=>{ qsa('.nav-item').forEach(n=>n.classList.remove('active')); nav.classList.add('active'); const target = nav.getAttribute('data-target'); qsa('.section').forEach(s=>s.style.display='none'); qs('#'+target).style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }); });
+
+/* Filters & search */
+qs('#menuFilter').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('#menuList .menu-item').forEach(tr=> tr.style.display = (q==='' || tr.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
+qs('#posSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('#menuListPOS .menu-item').forEach(mi=> mi.style.display = (q==='' || mi.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
+qs('#filterCategory').addEventListener('change', e=>{ const c=e.target.value; qsa('#menuListPOS .menu-item').forEach(mi=> mi.style.display = (c==='' || mi.querySelector('.cat').textContent === c) ? '' : 'none'); });
+
+const gSearch = qs('#globalSearch');
+
+if(gSearch){
+  gSearch.addEventListener('input', e=>{
+    const q = e.target.value.toLowerCase();
+
+    qsa('.menu-item').forEach(mi =>
+      mi.style.display =
+      (q==='' || mi.textContent.toLowerCase().includes(q))
+      ? '' : 'none'
+    );
+
+    qsa('.table-unit').forEach(tu =>
+      tu.style.display =
+      (q==='' || tu.textContent.toLowerCase().includes(q))
+      ? '' : 'none'
+    );
+  });
+}
+/* Other buttons */
+qs('#clearBillBtn').addEventListener('click', ()=> clearBill());
+qs('#printBillBtn').addEventListener('click', ()=> printBillPreview());
+qs('#submitBillBtn').addEventListener('click', ()=> submitBill());
+
+
+document.getElementById("bill_table").addEventListener("change", ()=>{
+  const tableNo = document.getElementById("bill_table").value;
+  console.log("Table changed to:", tableNo);
+  loadPendingBillFromServer(tableNo);
+});
+document.getElementById("bill_status").addEventListener("change", syncBillStatusStyle);
+const applyGstEl = document.getElementById("applyGst");
+if(applyGstEl){
+  applyGstEl.addEventListener("change", ()=>{
+    const gstLabel = document.getElementById("gstLabel");
+    if(gstLabel){
+      gstLabel.textContent = applyGstEl.checked ? "GST (5%)" : "GST (0%)";
+    }
+    renderBill();
+  });
+}
+
+
+
+
+/* Init */
+async function init(){ 
+  try{ 
+    await renderMenuList(); 
+    await renderTables(); 
+    populateTableSelect(); 
+    renderRecentBills(); 
+    renderBill(); 
+    syncBillStatusStyle();
+    if(applyGstEl){
+      const gstLabel = document.getElementById("gstLabel");
+      if(gstLabel){
+        gstLabel.textContent = applyGstEl.checked ? "GST (5%)" : "GST (0%)";
+      }
+    }
+
+    // ✅ ✅ ✅ PAGE LOAD PAR AUTOMATIC PENDING LOAD
+    const tableNo = document.getElementById("bill_table").value;
+    if(tableNo){
+      console.log("Auto loading pending for table:", tableNo);
+      loadPendingBillFromServer(tableNo);
+    }
+
+  }catch(e){ 
+    console.error('Init error', e); 
+  } 
+}
+
+/* ===== PRO CASHIER MODE ===== */
+
+function changeQty(index, change){
+  bill.items[index].qty =
+    (bill.items[index].qty || 1) + change;
+
+  if(bill.items[index].qty <= 0){
+    removeItem(index);
+    return;
+  }
+
+  renderBill();
+}
+
+/* renderBill MODIFY (replace inside loop) */
+function renderBill(){
+
+  const billItems=document.getElementById("billItems");
+  billItems.innerHTML="";
+
+  if(bill.items.length===0){
+    billItems.innerHTML=`<div id="billEmpty"
+    style="text-align:center;color:#9ca3af;padding:40px">
+    No items added
+    </div>`;
+    document.getElementById("subtotal").textContent="₹ 0.00";
+    document.getElementById("gst").textContent="₹ 0.00";
+    document.getElementById("grandTotal").textContent="₹ 0.00";
+    return;
+  }
+
+  let subtotal=0;
+
+  bill.items.forEach((item,index)=>{
+
+    if(!item.qty) item.qty=1;
+
+    let total=item.price*item.qty;
+    subtotal+=total;
+
+    billItems.innerHTML += `
+    <div class="bill-row">
+      <div>
+        <div style="font-weight:700">${item.name}</div>
+        <div style="font-size:12px;color:#aaa">
+          ₹ ${item.price.toFixed(2)}
+        </div>
+      </div>
+
+      <div style="text-align:right">
+        <div>
+          <button class="qty-btn"
+            onclick="changeQty(${index},-1)">-</button>
+
+          ${item.qty}
+
+          <button class="qty-btn"
+            onclick="changeQty(${index},1)">+</button>
+        </div>
+
+        <div class="price-small">
+          ₹ ${total.toFixed(2)}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  const gst = isGstApplied() ? (subtotal * 0.05) : 0;
+  const grand=subtotal+gst;
+
+  document.getElementById("subtotal").textContent =
+    "₹ "+subtotal.toFixed(2);
+
+  document.getElementById("gst").textContent =
+    "₹ "+gst.toFixed(2);
+
+  document.getElementById("grandTotal").textContent =
+    "₹ "+grand.toFixed(2);
+}
+
+
+init();
+
+window.onload = function(){
+   renderMenuList();
+};
+
+  </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+
+</html>
+
+
+
+
+

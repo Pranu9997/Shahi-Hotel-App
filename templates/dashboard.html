@@ -6,27 +6,64 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     :root{
       --bg:#070707; --panel:#0f0f10; --muted:#9ca3af; --gold:#d4af37; --gold-2:#f2c94c;
       --glass: rgba(255,255,255,0.02);
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(180deg,var(--bg),#050505);color:#fff;-webkit-font-smoothing:antialiased}
-    a{color:inherit;text-decoration:none}
+    html,body{
+  height:100%;
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(
+      135deg,
+      #05070f 0%,
+      #0b1224 40%,
+      #060b18 100%
+  );
+  color:#fff;
+}  a{color:inherit;text-decoration:none}
     .topbar{position:fixed;left:0;right:0;top:0;height:72px;background:linear-gradient(90deg, rgba(212,175,55,0.06), rgba(0,0,0,0.25));backdrop-filter: blur(4px);border-bottom:1px solid rgba(212,175,55,0.06);display:flex;align-items:center;justify-content:space-between;padding:12px 20px;z-index:1000}
     .brand{display:flex;align-items:center;gap:12px}
     .logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-2));display:flex;align-items:center;justify-content:center;color:#0a0a0a;font-weight:800}
     .top-actions{display:flex;align-items:center;gap:12px}
     .search{display:flex;align-items:center;background:var(--panel);border-radius:10px;padding:8px 10px;border:1px solid rgba(255,255,255,0.03);gap:8px}
     .search input{background:transparent;border:none;outline:none;color:#fff;width:260px}
-    .app{max-width:1400px;margin:0 auto;padding:100px 20px 40px;display:grid;grid-template-columns:260px 1fr;gap:20px}
-    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.01), var(--panel));border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 36px rgba(0,0,0,0.6);height:calc(100vh - 140px);position:sticky;top:88px}
-    .nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;color:var(--muted);cursor:pointer;user-select:none}
+    .app{
+  max-width:1400px;
+  margin:0 auto;
+  padding:20px 0px 20px;   /* ⭐ reduce top gap */
+  display:grid;
+  grid-template-columns:250px 1fr;
+  gap:20px;
+}
+    .sidebar{
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), var(--panel));
+  border-radius:12px;
+  padding:18px;
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow:0 12px 36px rgba(0,0,0,0.6);
+  height:calc(100vh - 140px);
+  position:sticky;
+  top:88px;
+
+  margin-left:-65px;   /* ⭐ YE ADD KARO */
+}.nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;color:var(--muted);cursor:pointer;user-select:none}
     .nav-item.active{background:linear-gradient(90deg, rgba(212,175,55,0.06), rgba(255,223,119,0.02));color:#fff;font-weight:600;border-left:3px solid var(--gold)}
     main{min-height:calc(100vh - 140px)}
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 30px rgba(0,0,0,0.35);margin-bottom:18px}
-    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:18px}
+   .panel{
+    
+  background:rgba(20,24,35,0.75);
+  margin-top:0;
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(22px);
+  border-radius:30px;
+  box-shadow:0 38px 30px rgba(0,0,0,0.45);
+  padding:28px;
+} .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:18px}
     .card{padding:14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
     .pos-layout{display:grid;grid-template-columns:1fr 420px;gap:18px}
     .menu-list{max-height:520px;overflow:auto;padding:10px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02)}
@@ -128,11 +165,316 @@
     }
 }
 
+
+/* ===== ADD THIS BELOW ===== */
+@media (max-width: 768px) {
+
+    .app {
+        display: block !important;
+        padding: 140px 12px 20px;
+    }
+
+    .sidebar {
+        display: flex !important;
+        position: static;
+        width: 100%;
+        height: auto;
+        overflow-x: auto;
+    }
+
+    main {
+        width: 100%;
+    }
+
+}
+.nav-item{
+  transition:all .25s ease;
+}
+
+.nav-item:hover{
+  background:rgba(255,255,255,0.06);
+  color:#fff;
+  transform:translateX(5px);
+}
+
+.dashboard-card{
+  padding:18px;
+  border-radius:18px;
+  background:linear-gradient(135deg,
+      rgba(255,215,115,0.14),
+      rgba(20,20,25,0.85));
+  border:1px solid rgba(255,215,115,0.28);
+  box-shadow:0 8px 25px rgba(0,0,0,0.45);
+  backdrop-filter:blur(10px);
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  transition:0.3s;
+}
+
+.dashboard-card:hover{
+  transform:translateY(-5px);
+}
+.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(255,215,115,0.35);
+}
+.topbar button{
+  transition:all .3s ease;
+}
+
+.topbar button:hover{
+  transform:scale(1.05);
+}
+@media (max-width:768px){
+
+  .topbar{
+    flex-direction:column;
+    height:auto;
+    padding:10px;
+    gap:10px;
+  }
+
+  .topbar > div{
+    width:100%;
+    justify-content:center !important;
+  }
+
+  .app{
+    padding-top:170px;
+  }
+
+  .dashboard-card{
+    width:100%;
+  }
+}
+/* TODAY SUMMARY FIX */
+.summary-box{
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+
+.summary-left{
+  flex:1;
+  min-width:250px;
+}
+
+.summary-right{
+  width:260px;
+}
+
+/* MOBILE FIX */
+@media (max-width:768px){
+  .summary-box{
+    flex-direction:column;
+  }
+
+  .summary-right{
+    width:100%;
+  }
+}
+  .summary-right{
+    max-width:320px;
+  }
+  .summary-right > div{
+   box-shadow:0 10px 30px rgba(0,0,0,0.45);
+}
+.dashboard-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow:
+        0 0 15px rgba(255,220,150,0.4),
+        0 0 30px rgba(255,150,80,0.35);
+}
+.dashboard-card:hover span {
+    color: white;
+}
+
+.table-card{
+    padding:16px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:700;
+    color:white;
+    cursor:pointer;
+}
+
+/* colors */
+.available{ background:#16a34a; }   /* green */
+.reserved{ background:#d97706; }    /* orange */
+.ondine{ background:#dc2626; }      /* red */
+
+.table-map{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:12px;
+}
+
+.table-card{
+    background:#111827;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:700;
+}
+.table-card{
+    padding:18px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:700;
+    color:white;
+    transition:0.3s;
+}
+.table-map{
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.table-card{
+    background:#111827;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    color:white;
+    font-weight:700;
+}
+/* STATUS BASED COLORS */
+.available{
+    background:#16a34a;   /* green */
+}
+
+.reserved{
+    background:#d97706;   /* orange */
+}
+
+.ondine{
+    background:#dc2626;   /* red */
+}
+.table-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 0 12px rgba(255,255,255,0.2);
+}
+main{
+  margin:0 !important;
+  padding:0 !important;
+}
+.cards{
+   display:grid;
+   grid-template-columns: repeat(4,1fr);
+   gap:16px;
+}
+@media (max-width: 768px){
+
+  .cards{
+    grid-template-columns: 1fr;   /* mobile me one by one */
+  }
+
+  .dashboard-card{
+    padding:14px;
+    font-size:14px;
+  }
+
+}
+
+.dashboard-card{
+  border-radius:12px;
+  transition:.3s;
+}
+
+.dashboard-card:hover{
+  transform:translateY(-3px);
+}
+.topbar-new{
+    height:88px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 28px;
+    background:linear-gradient(100deg,
+        rgba(255,215,115,0.22),
+        rgba(15,15,15,0.88),
+        rgba(255,215,115,0.12));
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,215,115,0.25);
+    box-shadow:0 6px 28px rgba(0,0,0,0.55);
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:9999;
+}
+/* ===== MOBILE FORCE MINI ===== */
+@media (max-width:768px){
+
+  body{
+    zoom: 0.5;
+  }
+
+}
+
+.history-wrap{
+  margin-top:14px;
+  overflow:auto;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.18));
+}
+.history-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:620px;
+}
+.history-table th,
+.history-table td{
+  padding:10px 12px;
+  text-align:left;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.history-table th{
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#d7c8a1;
+}
+.history-table td{
+  font-size:14px;
+  color:#f3f3f3;
+}
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+.status-pill.pending{
+  background:rgba(240,173,78,0.16);
+  color:#ffd58d;
+  border:1px solid rgba(240,173,78,0.35);
+}
+.status-pill.paid{
+  background:rgba(60,179,113,0.16);
+  color:#9ff0bf;
+  border:1px solid rgba(60,179,113,0.35);
+}
+.empty-history{
+  text-align:center;
+  color:var(--muted);
+}
+
   </style>
 </head>
+
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   /upar wala Dashboard hai/
- <div style="
+ <div class="topbar-new
     height:88px;
     width:100%;
     display:flex;
@@ -294,7 +636,6 @@
       </div>
 
       <button class="btn ghost" id="openAddItem"><i class="fa fa-plus"></i> Add Item</button>
-      <button class="btn ghost" id="exportCSV"><i class="fa fa-file-csv"></i> Export</button>
       <button class="btn ghost" onclick="location.href='/logout'"><i class="fa fa-sign-out-alt"></i> Logout</button>
     </div>
   </div>
@@ -309,136 +650,124 @@
       <div>
         <div class="nav-item active" data-target="panelOverview"><i class="fa fa-tachometer-alt"></i> Overview</div>
         <div class="nav-item" data-target="panelMenu"><i class="fa fa-utensils"></i> Menu</div>
-        <div class="nav-item" data-target="panelPOS"><i class="fa fa-receipt"></i> Billing / POS</div>
+
+
+        <div class="nav-item" onclick="location.href='/billing'">
+    <i class="fa fa-receipt"></i> Billing / POS
+</div>
+
         <div class="nav-item" data-target="panelTables"><i class="fa fa-chair"></i> Tables</div>
         <div class="nav-item" data-target="panelReports"><i class="fa fa-chart-line"></i> Reports</div>
       </div>
     </aside>
 
-    <main>
-      <section id="panelOverview" class="panel section">
-        <h2>Overview</h2>
-        <div class="muted">Live snapshot — sales, orders and occupancy</div>
-<div class="cards" style="
-    margin-top:12px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-">
+<main>
 
+<section id="panelOverview" class="panel section active">
+
+  <h2>Overview</h2>
+  <div class="muted">
+    Live snapshot — sales, orders and occupancy
+  </div>
+
+  <div class="cards" style="
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+  ">
   <!-- CARD 1 -->
-  <div style="
-      padding:18px;
-      border-radius:18px;
-      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(255,215,115,0.28);
-      box-shadow:0 8px 30px rgba(0,0,0,0.45);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-  ">
-      <span style="color:#d8c79f;font-size:14px;font-weight:600;">Today's Orders</span>
-      <span id="k_orders" style="
-          font-size:30px;
-          font-weight:800;
-          color:#ffe8a8;
-          text-shadow:0 0 14px rgba(255,210,120,0.6);
-      ">—</span>
-  </div>
-
-  <!-- CARD 2 -->
-  <div style="
-      padding:18px;
-      border-radius:18px;
-      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(255,215,115,0.28);
-      box-shadow:0 8px 30px rgba(0,0,0,0.45);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-  ">
+<div class="dashboard-card">
   <span style="color:#d8c79f;font-size:14px;font-weight:600;">
-
-Today’s Revenue
-</span>
-
-<span id="k_revenue" style="
-    font-size:30px;
-    font-weight:800;
-    color:#ffd884;
-    text-shadow:0 0 14px rgba(255,210,120,0.6);
-">
-    ₹ {{ today_revenue }}
-</span>
+    Today's Orders
+  </span>
+  <span id="k_orders" style="
+      font-size:30px;
+      font-weight:800;
+      color:#ffe8a8;
+      text-shadow:0 0 14px rgba(255,210,120,0.6);
+  ">
+      —
+  </span>
 </div>
 
-
-  <!-- CARD 3 -->
-  <div style="
-      padding:18px;
-      border-radius:18px;
-      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(255,215,115,0.28);
-      box-shadow:0 8px 30px rgba(0,0,0,0.45);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
+<!-- CARD 2 -->
+<div class="dashboard-card">
+  <span style="color:#d8c79f;font-size:14px;font-weight:600;">
+    Today’s Revenue
+  </span>
+  <span id="k_revenue" style="
+      font-size:30px;
+      font-weight:800;
+      color:#ffd884;
+      text-shadow:0 0 14px rgba(255,210,120,0.6);
   ">
-      <span style="color:#d8c79f;font-size:14px;font-weight:600;">Occupied Tables</span>
-      <span id="k_tables" style="
-          font-size:30px;
-          font-weight:800;
-          color:#ffe8a8;
-          text-shadow:0 0 14px rgba(255,210,120,0.6);
-      ">—</span>
-  </div>
-
-  <!-- CARD 4 -->
-  <div style="
-      padding:18px;
-      border-radius:18px;
-      background:linear-gradient(135deg, rgba(255,215,115,0.18), rgba(25,25,25,0.7));
-      backdrop-filter:blur(12px);
-      border:1px solid rgba(255,215,115,0.28);
-      box-shadow:0 8px 30px rgba(0,0,0,0.45);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-  ">
-      <span style="color:#d8c79f;font-size:14px;font-weight:600;">Pending Payments</span>
-      <span id="k_pending" style="
-          font-size:30px;
-          font-weight:800;
-          color:#ffd884;
-          text-shadow:0 0 14px rgba(255,210,120,0.6);
-      ">—</span>
-  </div>
-
+      ₹ {{ today_revenue }}
+  </span>
 </div>
 
+<!-- CARD 3 -->
+<div class="dashboard-card">
+  <span style="color:#d8c79f;font-size:14px;font-weight:600;">
+    Occupied Tables
+  </span>
+  <span id="k_tables" style="
+      font-size:30px;
+      font-weight:800;
+      color:#ffe8a8;
+      text-shadow:0 0 14px rgba(255,210,120,0.6);
+  ">
+      —
+  </span>
+</div>
 
-        <div class="panel" style="display:flex;gap:18px;align-items:center;justify-content:space-between">
-          <div style="flex:1">
-            <div style="font-weight:700">Today's Summary</div>
-            <div style="color:var(--muted);margin-top:6px">Quick metrics and latest transactions.</div>
-            <div style="margin-top:12px;max-height:120px;overflow:auto">
-              <table style="width:100%;color:#fff;border-collapse:collapse">
-                <thead><tr><th style="text-align:left;color:var(--muted);font-weight:600">Bill</th><th style="text-align:left;color:var(--muted);font-weight:600">Table</th><th style="text-align:left;color:var(--muted);font-weight:600">Amount</th></tr></thead>
-                <tbody id="recentBills"><tr><td colspan="3" class="muted">No recent bills</td></tr></tbody>
-              </table>
-            </div>
-          </div>
+<!-- CARD 4 -->
+<div class="dashboard-card">
+  <span style="color:#d8c79f;font-size:14px;font-weight:600;">
+    Pending Payments
+  </span>
+  <span id="k_pending" style="
+      font-size:30px;
+      font-weight:800;
+      color:#ffd884;
+      text-shadow:0 0 14px rgba(255,210,120,0.6);
+  ">
+      —
+  </span>
+</div>
+</div>
+      
+      <div class="panel summary-box">
+         
 
-          <div style="width:260px">
+       <div class="summary-right" style="width:100%">
             <div style="font-weight:700;color:var(--gold)">Quick Actions</div>
             <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
               <button class="btn" id="navCreateBill"><i class="fa fa-plus"></i> New Bill</button>
               <button class="btn ghost" id="navFindMenu"><i class="fa fa-utensils"></i> Find Menu</button>
-              <button class="btn ghost" id="navExportCsv"><i class="fa fa-file-csv"></i> Export CSV</button>
             </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <div style="font-weight:700;color:var(--gold)">Bills History</div>
+            <div class="muted">Latest bills with amount and status</div>
+          </div>
+          <div class="history-wrap">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Bill No</th>
+                  <th>Table</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="billHistoryBody">
+                <tr><td colspan="4" class="empty-history">Loading history...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -483,72 +812,20 @@ Today’s Revenue
         </div>
       </section>
 
-      <section id="panelPOS" class="panel section" style="display:none">
-        <h2>Billing / POS</h2>
-        <div class="muted">Select menu items on the left, review & submit on right.</div>
-
-        <div class="pos-layout" style="margin-top:12px">
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <div style="font-weight:700">Menu</div>
-              <div style="display:flex;gap:8px;align-items:center">
-                <input id="posSearch" placeholder="Search menu..." style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
-                <select id="filterCategory" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
-                  <option value="">All</option><option>Veg</option><option>Non-Veg</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="menu-list" id="menuListPOS">
-            </div>
-          </div>
-
-          <div class="bill-panel">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:700">Current Bill</div>
-              <div class="muted">Auto-calculates GST (5%)</div>
-            </div>
-
-            <div style="display:flex;gap:8px;align-items:center">
-              <label style="min-width:70px">Table</label>
-              <select id="bill_table" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff" name="table_number"></select>
-              <label style="min-width:70px">Status</label>
-              <select id="bill_status" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff" name="status">
-                <option>Paid</option><option>Pending</option>
-              </select>
-            </div>
-
-            <div class="bill-items" id="billItems">
-              <div id="billEmpty" style="text-align:center;color:var(--muted);padding:40px 10px">No items added. Click <strong>+</strong> on left to add items.</div>
-            </div>
-
-            <div class="bill-totals" style="background:linear-gradient(90deg, rgba(212,175,55,0.03), rgba(255,255,119,0.02));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
-              <div style="display:flex;justify-content:space-between"><div class="muted">Subtotal</div><div id="subtotal" class="price-small">₹ 0.00</div></div>
-              <div style="display:flex;justify-content:space-between"><div class="muted">GST (5%)</div><div id="gst" class="price-small">₹ 0.00</div></div>
-              <div style="display:flex;justify-content:space-between;font-weight:800;margin-top:8px"><div>Total</div><div id="grandTotal" class="price-small">₹ 0.00</div></div>
-
-              <div style="display:flex;gap:10px;margin-top:12px">
-                <button class="btn" id="submitBillBtn"><i class="fa fa-paper-plane"></i> Generate & Submit</button>
-                <button class="btn ghost" id="clearBillBtn"><i class="fa fa-trash"></i> Clear</button>
-                <button class="btn secondary" id="printBillBtn"><i class="fa fa-print"></i> Print</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="panelTables" class="panel section" style="display:none">
+     
+      <section id="panelTables" class="panel section"  style="display:none">
         <h2>Tables</h2>
         <div class="muted">Click a table to toggle status (Available → Reserved → On-dine)</div>
 
         <div style="margin-top:12px" class="table-map" id="tableMap"></div>
+     
       </section>
 
       <section id="panelReports" class="panel section" style="display:none">
         <h2>Reports</h2>
         <div class="muted">Exports & daily summaries.</div>
         <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
-          <button class="btn ghost" id="generateReport">Generate PDF (demo)</button>
+          <button class="btn ghost" id="generateReport">Generate PDF</button>
         </div>
       </section>
 
@@ -583,8 +860,8 @@ Today’s Revenue
  <script>
 
 
-const API = { items:'/api/items', addItem:'/api/menu/add', billing:'/api/billing', tables:'/api/tables' };
-const LS = { ITEMS:'smk_items_v2', BILLS:'smk_bills_v2', TABLES:'smk_tables_v2' };
+const API = { items:'/api/items', addItem:'/api/menu/add', tables:'/api/tables' };
+const LS = { ITEMS:'smk_items_v2', TABLES:'smk_tables_v2' };
 const qs = s => document.querySelector(s);
 const qsa = s => Array.from(document.querySelectorAll(s));
 function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -597,16 +874,40 @@ async function getItems(){
   try{ const r=await tryFetch(API.items); const data=await r.json(); localStorage.setItem(LS.ITEMS, JSON.stringify(data)); return data; }
   catch(e){ const local=localStorage.getItem(LS.ITEMS); if(local) return JSON.parse(local); localStorage.setItem(LS.ITEMS, JSON.stringify(demoItems)); return demoItems; }
 }
-function saveItemsLocal(items){ localStorage.setItem(LS.ITEMS, JSON.stringify(items)); }
+function saveItemsLocal(items){
+  localStorage.setItem(LS.ITEMS, JSON.stringify(items));
+}
 async function addItemToServer(payload){
-  try{ const r=await tryFetch(API.addItem,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const json=await r.json(); if(json && json.items) saveItemsLocal(json.items); return json.items || json; }
-  catch(e){ const arr=JSON.parse(localStorage.getItem(LS.ITEMS)||'[]'); const id=arr.length?Math.max(...arr.map(x=>x.id))+1:1; arr.unshift({id,item_name:payload.item_name,category:payload.category,price:parseFloat(payload.price)}); localStorage.setItem(LS.ITEMS, JSON.stringify(arr)); return arr; }
-}
-async function submitBillToServer(payload){
-  try{ const r=await tryFetch(API.billing,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},4500); const json=await r.json(); saveBillLocal(json||payload); return {ok:true, data:json||payload}; } catch(e){ saveBillLocal(payload); return {ok:false, err:e}; }
-}
-function saveBillLocal(bill){ const bills=JSON.parse(localStorage.getItem(LS.BILLS)||'[]'); bills.unshift({...bill, created_at:new Date().toISOString()}); localStorage.setItem(LS.BILLS, JSON.stringify(bills.slice(0,20))); }
+  try{
+    const r = await tryFetch(API.addItem,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
 
+    const json = await r.json();
+
+    if(json && json.items)
+        saveItemsLocal(json.items);
+
+    return json.items || json;
+  }
+  catch(e){
+    const arr = JSON.parse(localStorage.getItem(LS.ITEMS)||'[]');
+    const id = arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1;
+
+    arr.unshift({
+      id,
+      item_name:payload.item_name,
+      category:payload.category,
+      price:parseFloat(payload.price)
+    });
+
+    localStorage.setItem(LS.ITEMS, JSON.stringify(arr));
+
+    return arr;
+  }
+}
 async function getTables(){
   try{ const r=await tryFetch(API.tables); const data=await r.json(); localStorage.setItem(LS.TABLES, JSON.stringify(data)); return data; }
   catch(e){ const local=localStorage.getItem(LS.TABLES); if(local) return JSON.parse(local); const t=Array.from({length:10},(_,i)=>({table_no:i+1,status:'available'})); localStorage.setItem(LS.TABLES, JSON.stringify(t)); return t; }
@@ -615,21 +916,135 @@ async function updateTableServer(table_no,status){
   try{ const r=await tryFetch(API.tables + '/' + table_no,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})}); const json=await r.json(); const tables=JSON.parse(localStorage.getItem(LS.TABLES)||'[]'); const idx=tables.findIndex(x=>x.table_no==table_no); if(idx>-1){ tables[idx].status=status; localStorage.setItem(LS.TABLES, JSON.stringify(tables)); } return json; }
   catch(e){ const tables=JSON.parse(localStorage.getItem(LS.TABLES)||'[]'); const idx=tables.findIndex(x=>x.table_no==table_no); if(idx>-1){ tables[idx].status=status; localStorage.setItem(LS.TABLES, JSON.stringify(tables)); } return null; }
 }
+async function loadTables(){
+
+    const res = await fetch('/api/tables');
+    const data = await res.json();
+
+    const map = document.getElementById("tableMap");
+    map.innerHTML = "";
+
+    data.forEach(t => {
+
+        let card = document.createElement("div");
+
+        card.className =
+            "table-card " + t.status.toLowerCase();
+
+        card.innerHTML =
+            "Table " + t.table_no + "<br>" + t.status;
+
+        map.appendChild(card);
+    });
+}
+
+
+/*todays order code*/
+
+function loadTodayOrders() {
+
+    fetch('/today-orders')
+    .then(res => res.json())
+    .then(data => {
+
+        document.getElementById("k_orders").innerText = data.length;
+        renderBillHistory(data);
+
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
+
+loadTodayOrders();
+setInterval(loadTodayOrders, 5000);
+
+/*ocuppied tables */
+
+function loadOccupiedTables() {
+
+    fetch('/api/tables')
+    .then(res => res.json())
+    .then(data => {
+
+        // sirf occupied count
+        let occupied = data.filter(t => t.status === "Occupied").length;
+
+        document.getElementById("k_tables").innerText = occupied;
+    })
+    .catch(err => console.log(err));
+}
+
+loadOccupiedTables();
+setInterval(loadOccupiedTables, 5000);
+loadTables();
+
+
+/*pending payment*/
+
+
+function loadPendingOrders() {
+
+    fetch('/today-orders')
+    .then(res => res.json())
+    .then(data => {
+
+        // sirf pending count
+        let pending = data.filter(
+            o => o.status.toLowerCase() === "pending"
+        ).length;
+
+        document.getElementById("k_pending").innerText = pending;
+
+    })
+    .catch(err => console.log(err));
+}
+
+loadPendingOrders();
+setInterval(loadPendingOrders, 5000);
+
+function renderBillHistory(rows) {
+    const tbody = document.getElementById("billHistoryBody");
+    if (!tbody) return;
+
+    const history = Array.isArray(rows) ? rows.slice(0, 20) : [];
+    if (!history.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-history">No bill history found</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = history.map((row) => {
+        const amount = parseFloat(row.amount || 0).toFixed(2);
+        const statusRaw = (row.status || "").toString();
+        const status = statusRaw || "Unknown";
+        const statusClass = status.toLowerCase() === "paid" ? "paid" : "pending";
+
+        return `
+            <tr>
+                <td>${row.bill_no || "-"}</td>
+                <td>${row.table_number || "-"}</td>
+                <td>₹ ${amount}</td>
+                <td><span class="status-pill ${statusClass}">${status}</span></td>
+            </tr>
+        `;
+    }).join("");
+}
+
+
 
 /* RENDERERS */
 async function renderMenuList(){
   const items = await getItems();
   const list = qs('#menuList'); 
-  const posList = qs('#menuListPOS');
+ 
 
   // ✅ Safety check
-  if(!list || !posList){
-    console.warn("menuList or menuListPOS not found");
-    return;
-  }
+if(!list){
+   return;
+}
 
   list.innerHTML = ''; 
-  posList.innerHTML = '';
+  
 
   items.forEach(it=>{
     const html = `
@@ -654,28 +1069,7 @@ async function renderMenuList(){
     `;
 
     list.insertAdjacentHTML('beforeend', html);
-    posList.insertAdjacentHTML('beforeend', html);
   });
-
-  // ✅ MENU SECTION ke + button ke liye
-  qsa('#menuList .add-btn').forEach(b => 
-    b.addEventListener('click', e => {
-      const id = e.currentTarget.dataset.id;
-      const name = e.currentTarget.dataset.name;
-      const price = parseFloat(e.currentTarget.dataset.price);
-      addItemToBill(id, name, price);
-    })
-  );
-
-  // ✅ ✅ ✅ POS SECTION ke + button ke liye (MAIN FIX)
-  qsa('#menuListPOS .add-btn').forEach(b => 
-    b.addEventListener('click', e => {
-      const id = e.currentTarget.dataset.id;
-      const name = e.currentTarget.dataset.name;
-      const price = parseFloat(e.currentTarget.dataset.price);
-      addItemToBill(id, name, price);
-    })
-  );
 
   qs('#menuCount').textContent = items.length;
 }
@@ -685,285 +1079,13 @@ async function renderTables(){
   const tables = await getTables(); const wrap = qs('#tableMap'); wrap.innerHTML = '';
   tables.forEach(t=>{
     const d=document.createElement('div'); d.className='table-unit '+(t.status||'available'); d.dataset.table=t.table_no; d.innerHTML=`<div class="table-label">Table ${t.table_no}</div><div class="table-sub">${t.status}</div>`;
-    d.addEventListener('click', async ()=>{ let next='reserved'; if(d.classList.contains('available')) next='reserved'; else if(d.classList.contains('reserved')) next='ondine'; else next='available'; d.classList.remove('available','reserved','ondine'); d.classList.add(next); d.querySelector('.table-sub').textContent=next; await updateTableServer(t.table_no,next); populateTableSelect(); });
+    d.addEventListener('click', async ()=>{ let next='reserved'; if(d.classList.contains('available')) next='reserved'; else if(d.classList.contains('reserved')) next='ondine'; else next='available'; d.classList.remove('available','reserved','ondine'); d.classList.add(next); d.querySelector('.table-sub').textContent=next; await updateTableServer(t.table_no,next); });
     wrap.appendChild(d);
   });
   const occ = tables.filter(x=>x.status==='ondine').length; qs('#k_tables').textContent = `${occ} / ${tables.length}`;
 }
 
-function populateTableSelect(){ getTables().then(tables=>{ const sel = qs('#bill_table'); sel.innerHTML=''; tables.forEach(t=>{ const opt=document.createElement('option'); opt.value=t.table_no; opt.textContent='Table '+t.table_no+(t.status?(' ('+t.status+')'):''); sel.appendChild(opt); }); }); }
-
-function renderRecentBills(){
-  const recent = JSON.parse(localStorage.getItem(LS.BILLS)||'[]');
-  const tbody=qs('#recentBills');
-  tbody.innerHTML='';
-
-  if(!recent.length){
-    tbody.innerHTML='<tr><td colspan="3" class="muted">No recent bills</td></tr>';
-    return;
-  }
-
-  recent.slice(0,5).forEach(b=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${b.bill_no||'INV'}</td>
-      <td>${b.table_number||'-'}</td>
-      <td class="price-small">₹ ${parseFloat(b.amount||0).toFixed(2)}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  qs('#k_orders').textContent = recent.length;
-
-  // Revenue Flask se aayega
-  // qs('#k_revenue').textContent = ...
-
-  qs('#k_pending').textContent =
-    recent.filter(r=>r.status==='Pending' || r.status==='pending').length || 0;
-}
-
-
-
-/* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
-/* ========== FINAL POS ENGINE (FIXED WORKING VERSION) ========== */
-
-let bill = { items: [] };
-
-async function addItemToBill(id, name, price){
-  bill.items.push({
-    id: id,
-    name: name,
-    price: parseFloat(price)
-  });
-
-  // ✅ AUTO TABLE STATUS = ONDINE (order start hote hi)
-  const tableNo = document.getElementById("bill_table").value;
- await updateTableServer(tableNo, "ondine");
-renderTables();   // 👈 UI instantly update
-
-
-  renderBill();
-}
-
-
-function removeItem(index){
-  bill.items.splice(index, 1);
-  renderBill();
-}
-
-function clearBill(){
-  bill.items = [];
-  renderBill();
-}
-
-
-function renderBill(){
-  const billItems = document.getElementById("billItems");
-
-  if(!billItems){
-    console.warn("Bill UI not ready yet");
-    return;
-  }
-
-  // ✅ bill empty message ko remove/recreate safely
-  let billEmpty = document.getElementById("billEmpty");
-
-  billItems.innerHTML = "";
-
-  if(bill.items.length === 0){
-    if(!billEmpty){
-      billEmpty = document.createElement("div");
-      billEmpty.id = "billEmpty";
-      billEmpty.style.textAlign = "center";
-      billEmpty.style.color = "#9ca3af";
-      billEmpty.style.padding = "40px 10px";
-      billEmpty.innerHTML = 'No items added. Click <strong>+</strong> on left to add items.';
-      billItems.appendChild(billEmpty);
-    }
-    return;
-  }
-
-  let subtotal = 0;
-
-  bill.items.forEach((item, index)=>{
-    subtotal += item.price;
-
-    billItems.innerHTML += `
-      <div class="bill-row">
-        <div>
-          <div style="font-weight:700">${item.name}</div>
-          <div class="muted" style="font-size:12px">ID: ${item.id}</div>
-        </div>
-
-        <div style="text-align:right">
-          <div class="price-small">₹ ${item.price.toFixed(2)}</div>
-          <button class="btn ghost" onclick="removeItem(${index})" style="margin-top:6px">
-            <i class="fa fa-trash"></i>
-          </button>
-        </div>
-      </div>`;
-  });
-
-  const gst = subtotal * 0.05;
-  const total = subtotal + gst;
-
-  document.getElementById("subtotal").textContent = "₹ " + subtotal.toFixed(2);
-  document.getElementById("gst").textContent = "₹ " + gst.toFixed(2);
-  document.getElementById("grandTotal").textContent = "₹ " + total.toFixed(2);
-}
-
-
-
-
-/* ---------- PRINT ---------- */
-
-function printBillPreview(){
-  if(!bill.items.length){ alert('Add items first'); return; }
-
-  const table = qs('#bill_table').value;
-  const status = qs('#bill_status').value;
-  const date = new Date().toLocaleString('en-IN');
-
-  const billNo = bill.bill_no || ('INV'+Date.now());
-  bill.bill_no = billNo;
-
-  const rows = bill.items.map((it,i)=>`
-    <tr>
-      <td style="padding:8px">${i+1}</td>
-      <td style="padding:8px">${escapeHtml(it.name)}</td>
-      <td style="padding:8px;text-align:right">₹ ${it.price.toFixed(2)}</td>
-    </tr>`).join('');
-
-  const html = `<html>
-  <head>
-    <title>Invoice ${billNo}</title>
-    <style>
-      body{font-family:Arial;padding:20px;color:#111}
-      th,td{border-bottom:1px solid #ddd;padding:8px}
-      th{background:#f7f7f7}
-    </style>
-  </head>
-  <body>
-    <h2>Shahi Mutton Khanawal</h2>
-    <div>Bill No: ${billNo} | ${date}</div>
-    <div>Table: ${table} | Status: ${status}</div>
-
-    <table style="width:100%;border-collapse:collapse;margin-top:12px">
-      <thead>
-        <tr><th>#</th><th>Item</th>
-        <th style="text-align:right">Price</th></tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-
-    <div style="text-align:right;margin-top:12px;font-weight:800">
-      Total: ${qs('#grandTotal').textContent}
-    </div>
-
-    <div style="margin-top:24px;font-size:12px;color:#666">
-      Thank you for dining with us!
-    </div>
-  </body></html>`;
-
-  const win = window.open('','_blank','width=800,height=800');
-  win.document.open();
-  win.document.write(html);
-  win.document.close();
-
-  win.onload = ()=>{
-    setTimeout(()=>{
-      try{ win.print(); win.close(); }catch(e){}
-    },300);
-  };
-}
-
-/* ---------- SUBMIT BILL ---------- */
-async function submitBill(){
-  if(bill.items.length === 0){ 
-    alert('Add items to bill'); 
-    return; 
-  }
-
-  const table = qs('#bill_table').value;
-  const status = qs('#bill_status').value;
-  const totalText = qs('#grandTotal').textContent.replace('₹','').trim();
-
-  const payload = { 
-    bill_no: 'INV' + Date.now(),
-    table_number: table,
-    items: JSON.stringify(bill.items),
-    amount: parseFloat(totalText),
-    status 
-  };
-
-  qs('#submitBillBtn').disabled = true;
-  qs('#submitBillBtn').textContent = 'Submitting...';
-
-  const res = await submitBillToServer(payload);
-
-  qs('#submitBillBtn').disabled = false;
-  qs('#submitBillBtn').innerHTML =
-    '<i class="fa fa-paper-plane"></i> Generate & Submit';
-
-  if(res.ok) alert('Bill submitted');
-  else alert('Server unreachable — saved locally');
-
-  renderRecentBills(); 
-  clearBill();
-
-  if(status === "Paid"){
-    await updateTableServer(table, "available");
-    renderTables();
-  }
-
-  if(status === "Pending"){
-    await updateTableServer(table, "reserved");
-    renderTables();
-  }
-}
-/* ---------- PENDING BILL LOAD ---------- */
-async function loadPendingBillFromServer(tableNo){
-  try {
-    console.log("Loading pending for table:", tableNo);
-
-    const res = await fetch(`/api/billing/pending/${tableNo}`);
-    const data = await res.json();
-
-    console.log("Pending API Data:", data);
-
-    bill.items = [];
-
-    if(!data.items){
-      console.log("No pending items found");
-      renderBill();
-      return;
-    }
-
-    // ✅ ✅ ✅ DIRECT ARRAY USE KARO — STRING SPLIT NAHI
-    const itemsArray = JSON.parse(data.items);  // ✅ FIX HERE
-
-    console.log("Decoded Pending Items:", itemsArray);
-
-    itemsArray.forEach(it => {
-      bill.items.push({
-        id: it.id,
-        name: it.name,
-        price: parseFloat(it.price)
-      });
-    });
-
-    document.getElementById("bill_status").value = data.status;
-
-    console.log("✅ Final Bill Items:", bill.items);
-
-    renderBill();
-
-  } catch (err) {
-    console.error("❌ Pending load error:", err);
-  }
-}
-// ✅ AUTO OPEN BILLING / POS TAB
-qsa('.nav-item')[2].click();
-
+/* ========== Dashboard UI ========== */
 
 /* ---------- UI Handlers (modal safe using closest) ---------- */
 document.addEventListener('click', e=>{
@@ -990,9 +1112,7 @@ qs('#addItemBtn').addEventListener('click', async ()=>{
     price: price
   });
 
-  // ✅ MENU + POS DONO TURANT REFRESH HONGE
   await renderMenuList();
-  renderBill();
 
   qs('#addMsg').textContent = 'Added'; 
   qs('#add_item_name').value=''; 
@@ -1013,62 +1133,63 @@ qs('#modalAddBtn').addEventListener('click', async ()=>{
   await addItemToServer({item_name:name,category:cat,price:price});
   await renderMenuList(); closeModal();
 });
-qsa('#menuListPOS .add-btn').forEach(b => {
-    b.onclick = () => addItemToBill(
-        b.dataset.id,
-        b.dataset.name,
-        parseFloat(b.dataset.price)
-    );
-});
-
-
 /* Navigation */
-qsa('.nav-item').forEach(nav=>{ nav.addEventListener('click', ()=>{ qsa('.nav-item').forEach(n=>n.classList.remove('active')); nav.classList.add('active'); const target = nav.getAttribute('data-target'); qsa('.section').forEach(s=>s.style.display='none'); qs('#'+target).style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }); });
+qsa('.nav-item').forEach(nav=>{
+  nav.addEventListener('click', ()=>{
 
+    qsa('.nav-item').forEach(n=>n.classList.remove('active'));
+    nav.classList.add('active');
+
+    const target = nav.getAttribute('data-target');
+
+    qsa('.section').forEach(s=>{
+      s.style.display='none';
+      s.classList.remove('active');
+    });
+
+    const panel = qs('#'+target);
+    panel.style.display='block';
+
+    setTimeout(()=>{
+      panel.classList.add('active');
+    },50);
+
+  });
+});
 /* Filters & search */
-qs('#menuFilter').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('#menuList .menu-item').forEach(tr=> tr.style.display = (q==='' || tr.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
-qs('#posSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('#menuListPOS .menu-item').forEach(mi=> mi.style.display = (q==='' || mi.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
-qs('#filterCategory').addEventListener('change', e=>{ const c=e.target.value; qsa('#menuListPOS .menu-item').forEach(mi=> mi.style.display = (c==='' || mi.querySelector('.cat').textContent === c) ? '' : 'none'); });
+const menuFilter = qs('#menuFilter');
+if(menuFilter){
+  menuFilter.addEventListener('input', e=>{
+    const q=e.target.value.toLowerCase();
+    qsa('#menuList .menu-item').forEach(tr=>{
+      tr.style.display = (q==='' || tr.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+  });
+}
+
 qs('#globalSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); qsa('.menu-item').forEach(mi=> mi.style.display = (q==='' || mi.textContent.toLowerCase().includes(q)) ? '' : 'none'); qsa('.table-unit').forEach(tu=> tu.style.display = (q==='' || tu.textContent.toLowerCase().includes(q)) ? '' : 'none'); });
 
 /* Other buttons */
-qs('#clearBillBtn').addEventListener('click', ()=> clearBill());
-qs('#printBillBtn').addEventListener('click', ()=> printBillPreview());
-qs('#submitBillBtn').addEventListener('click', ()=> submitBill());
-qs('#navCreateBill').addEventListener('click', ()=> { qsa('.nav-item')[2].click(); });
-qs('#navFindMenu').addEventListener('click', ()=> { qsa('.nav-item')[1].click(); qs('#menuFilter').focus(); });
-qs('#exportCSV').addEventListener('click', ()=> {
-  const items = JSON.parse(localStorage.getItem(LS.ITEMS) || '[]');
-  if(!items.length){ alert('No items'); return; }
-  const csv = ['id,name,category,price', ...items.map(i=>`${i.id},"${i.item_name.replace(/"/g,'""')}",${i.category},${i.price}`)].join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='menu_items.csv'; a.click(); URL.revokeObjectURL(url);
-});
-document.getElementById("bill_table").addEventListener("change", ()=>{
-  const tableNo = document.getElementById("bill_table").value;
-  console.log("Table changed to:", tableNo);
-  loadPendingBillFromServer(tableNo);
-});
+qs('#navCreateBill').onclick = ()=>{
+   window.location.href="/billing";
+};
 
+qs('#navFindMenu').onclick = ()=>{
+   document.querySelector('[data-target="panelMenu"]').click();
+};
 
-
+const generateReportBtn = qs('#generateReport');
+if(generateReportBtn){
+  generateReportBtn.onclick = ()=>{
+    window.open('/reports/bills/pdf', '_blank');
+  };
+}
 
 /* Init */
 async function init(){ 
   try{ 
     await renderMenuList(); 
-    await renderTables(); 
-    populateTableSelect(); 
-    renderRecentBills(); 
-    renderBill(); 
-
-    // ✅ ✅ ✅ PAGE LOAD PAR AUTOMATIC PENDING LOAD
-    const tableNo = document.getElementById("bill_table").value;
-    if(tableNo){
-      console.log("Auto loading pending for table:", tableNo);
-      loadPendingBillFromServer(tableNo);
-    }
+    await loadTables();
 
   }catch(e){ 
     console.error('Init error', e); 
@@ -1076,7 +1197,18 @@ async function init(){
 }
 init();
 
+window.addEventListener("DOMContentLoaded", () => {
 
+   document.querySelector(
+     '.nav-item[data-target="panelOverview"]'
+   ).click();
+
+});
+
+setInterval(loadTodayOrders, 5000);
+setInterval(loadOccupiedTables, 5000);
+setInterval(loadPendingOrders, 5000);
   </script>
+  
 </body>
 </html>

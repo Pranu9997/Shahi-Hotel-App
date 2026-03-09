@@ -3,162 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login – Shahi Mutton Khanawal</title>
+    <title>Login - Shahi Mutton Khanawal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --gold-1: #f7d58f;
+            --gold-2: #c88f3d;
+            --txt: #f7f5ef;
+            --muted: #c2c8d6;
+            --line: rgba(255, 220, 150, 0.34);
+            --danger: #ff9a9a;
+            --ok: #93e8b5;
+        }
 
-        /* ---------------------- BACKGROUND FULL FIT ---------------------- */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             width: 100vw;
-
-            background-image: url("{{ url_for('static', filename='images/sha.png') }}");
+            background-image:
+                radial-gradient(700px 420px at 85% 25%, rgba(255, 210, 125, 0.14), transparent 60%),
+                radial-gradient(640px 420px at 10% 85%, rgba(78, 136, 255, 0.14), transparent 62%),
+                linear-gradient(rgba(3, 6, 14, 0.24), rgba(3, 6, 14, 0.3)),
+                url("{{ url_for('static', filename='images/sha.png') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-
-            font-family: Arial, sans-serif;
+            font-family: 'Manrope', sans-serif;
+            color: var(--txt);
         }
 
-        /* ---------------------- PREMIUM LOGIN BOX ---------------------- */
+        /* Position kept same as requested */
         .login-box {
             position: absolute;
             right: 70px;
             top: 50%;
             transform: translateY(-50%);
+            width: 410px;
+            max-width: calc(100vw - 28px);
+            padding: 30px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 214, 132, 0.26);
+            background:
+                radial-gradient(170px 120px at 85% 6%, rgba(255, 211, 129, 0.05), transparent 72%),
+                linear-gradient(165deg, rgba(7, 12, 24, 0.2), rgba(7, 10, 19, 0.24));
+            backdrop-filter: blur(3px);
+            box-shadow: 0 14px 26px rgba(0, 0, 0, 0.25);
+        }
 
-            width: 350px;
-            padding: 28px;
-
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(10px);
-
-            border-radius: 18px;
-            border: 1px solid rgba(255, 215, 0, 0.2); /* soft gold edge */
-
-            box-shadow: 0 0 35px rgba(0,0,0,0.6);
-
-            color: white;
+        .brand-pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #f9dfab;
+            background: rgba(255, 211, 129, 0.1);
+            border: 1px solid rgba(255, 214, 132, 0.38);
         }
 
         .login-box h2 {
+            margin: 12px 0 8px 0;
+            font-family: 'Cinzel', serif;
+            font-size: 33px;
+            color: #ffe8bc;
+            letter-spacing: 0.8px;
+            line-height: 1.1;
+            text-shadow: 0 8px 20px rgba(248, 203, 122, 0.24);
+        }
+
+        .sub {
+            margin: 0 0 16px 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .error,
+        .success {
+            font-size: 13px;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffd98f;
-            letter-spacing: 1px;
         }
 
-        /* ---------------------- INPUTS ---------------------- */
-        input {
+        .error {
+            color: var(--danger);
+            background: rgba(255, 92, 92, 0.12);
+            border: 1px solid rgba(255, 112, 112, 0.32);
+        }
+
+        .success {
+            color: var(--ok);
+            background: rgba(72, 220, 145, 0.12);
+            border: 1px solid rgba(72, 220, 145, 0.32);
+        }
+
+        .field {
+            margin-bottom: 11px;
+        }
+
+        .field input {
             width: 100%;
-            padding: 13px;
-            margin: 12px 0;
-            border-radius: 8px;
-            border: none;
+            padding: 13px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            font-size: 14px;
             outline: none;
-            font-size: 15px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
-        /* ---------------------- REMEMBER ---------------------- */
+        .field input::placeholder {
+            color: rgba(226, 232, 245, 0.75);
+        }
+
+        .field input:focus {
+            border-color: rgba(255, 211, 129, 0.62);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(255, 196, 94, 0.24);
+        }
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap input {
+            padding-right: 48px;
+        }
+
+        .toggle-pass {
+            position: absolute;
+            top: 50%;
+            right: 9px;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 216, 136, 0.38);
+            background: rgba(10, 14, 24, 0.9);
+            color: #ffd89a;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            padding: 0;
+        }
+
+        .toggle-pass svg {
+            width: 18px;
+            height: 18px;
+            stroke: #ffd89a;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .captcha-wrap {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin: 6px 0 9px;
+        }
+
+        .captcha-code {
+            padding: 11px 13px;
+            border-radius: 11px;
+            border: 1px dashed rgba(255, 221, 156, 0.56);
+            background: rgba(255, 211, 129, 0.11);
+            color: #ffe9c0;
+            text-align: center;
+            letter-spacing: 0.22em;
+            font-weight: 800;
+            user-select: none;
+        }
+
+        .captcha-refresh {
+            width: 46px;
+            border-radius: 11px;
+            border: 1px solid rgba(255, 216, 136, 0.4);
+            background: rgba(11, 16, 27, 0.92);
+            color: #ffd89a;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .captcha-refresh:hover {
+            background: rgba(20, 29, 45, 0.95);
+        }
+
         .options {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            margin-top: 5px;
-            margin-bottom: 15px;
+            align-items: center;
+            margin: 8px 0 16px;
+            font-size: 13px;
+            color: #d5dbe7;
         }
 
         .options label {
             display: flex;
             align-items: center;
-            color: #ddd;
+            gap: 7px;
         }
 
-        /* ---------------------- 3D GOLD LOGIN BUTTON ---------------------- */
-        button {
+        .options input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #d1a04f;
+            margin: 0;
+        }
+
+        .submit-btn {
             width: 100%;
-            padding: 13px;
-            background: linear-gradient(180deg, #e3b260, #b88a44);
-            color: black;
             border: none;
-            border-radius: 8px;
-            font-size: 17px;
-            font-weight: 700;
+            border-radius: 12px;
+            padding: 13px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            color: #101018;
+            background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+            box-shadow: 0 14px 24px rgba(191, 136, 51, 0.36);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
         }
 
-        button:hover {
-            background: linear-gradient(180deg, #f2c879, #c9984c);
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px rgba(191, 136, 51, 0.42);
+            filter: brightness(1.06);
         }
 
-        /* ---------------------- SINGLE FORGOT PASSWORD ---------------------- */
         .forgot-bottom {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 16px;
         }
 
         .forgot-bottom a {
-            font-size: 14px;
-            color: #ffe1a6;
+            font-size: 13px;
+            color: #ffe3b2;
             text-decoration: none;
         }
 
         .forgot-bottom a:hover {
-            color: white;
+            color: #fff;
         }
 
-        /* Error message */
-        .error {
-            color: #ff8f8f;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        /* Mobile responsive */
         @media (max-width: 600px) {
             .login-box {
                 right: 50%;
+                top: 50%;
                 transform: translate(50%, -50%);
+                width: calc(100vw - 16px);
+                padding: 24px;
+            }
+
+            .login-box h2 {
+                font-size: 29px;
             }
         }
-
     </style>
 </head>
 
 <body>
-
     <div class="login-box">
-        <h2>Login</h2>
+        <div class="brand-pill">Shahi Access</div>
+        <h2>Welcome Back</h2>
+        <p class="sub">Secure login for dashboard and billing controls.</p>
 
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}
+        {% if success %}
+            <p class="success">{{ success }}</p>
+        {% endif %}
 
         <form method="POST" action="/login">
+            <div class="field">
+                <input type="text" name="username" placeholder="Username" value="{{ username or '' }}" required>
+            </div>
 
-            <input type="text" name="username" placeholder="Username" required>
+            <div class="field password-wrap">
+                <input id="loginPassword" type="password" name="password" placeholder="Password" required>
+                <button class="toggle-pass" type="button" id="togglePassword" title="Show password" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6-10-6-10-6z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
 
-            <input type="password" name="password" placeholder="Password" required>
+            <div class="captcha-wrap">
+                <div class="captcha-code">{{ captcha_code }}</div>
+                <button type="button" class="captcha-refresh" onclick="window.location.href='/login'" title="Refresh captcha">&#8635;</button>
+            </div>
+
+            <div class="field">
+                <input type="text" name="captcha" placeholder="Enter captcha" autocomplete="off" required>
+            </div>
 
             <div class="options">
                 <label><input type="checkbox"> Remember Me</label>
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit" class="submit-btn">Login</button>
 
-            <!-- ONLY ONE Forgot Password -->
             <div class="forgot-bottom">
                 <a href="forgot">Forgot Password?</a>
             </div>
-
         </form>
     </div>
 
+    <script>
+        const pwd = document.getElementById('loginPassword');
+        const btn = document.getElementById('togglePassword');
+
+        if (pwd && btn) {
+            const eyeSvg = `
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6-10-6-10-6z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>`;
+            const eyeOffSvg = `
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 3l18 18"></path>
+                    <path d="M9.9 4.2A11.3 11.3 0 0 1 12 4c6.2 0 10 6 10 6a18.6 18.6 0 0 1-4.2 4.9"></path>
+                    <path d="M6.2 6.2C3.5 8 2 10 2 10s3.8 6 10 6a10.7 10.7 0 0 0 5.8-1.7"></path>
+                </svg>`;
+
+            btn.addEventListener('click', () => {
+                const isHidden = pwd.type === 'password';
+                pwd.type = isHidden ? 'text' : 'password';
+                btn.innerHTML = isHidden ? eyeOffSvg : eyeSvg;
+                btn.title = isHidden ? 'Hide password' : 'Show password';
+                btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+            });
+        }
+    </script>
 </body>
 </html>

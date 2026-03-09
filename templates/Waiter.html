@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shahi Mutton Khanawal - Waiter POS</title>
+
+<style>
+:root{
+  --bg-1:#060b16;
+  --bg-2:#0b1528;
+  --panel:rgba(255,255,255,0.08);
+  --panel-soft:rgba(255,255,255,0.05);
+  --border:rgba(255,255,255,0.14);
+  --text:#f8fafc;
+  --muted:#b3bfd3;
+  --gold:#facc15;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --danger:#ef4444;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Poppins,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 380px at 8% -10%, rgba(59,130,246,0.2), transparent 60%),
+    radial-gradient(900px 420px at 100% 0%, rgba(250,204,21,0.12), transparent 60%),
+    linear-gradient(140deg,var(--bg-1),var(--bg-2));
+  min-height:100vh;
+}
+
+.shell{
+  max-width:1240px;
+  margin:0 auto;
+  padding:18px 14px 20px;
+}
+
+.topbar{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:linear-gradient(160deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+  backdrop-filter:blur(12px);
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  border-radius:10px;
+  object-fit:cover;
+  border:1px solid rgba(255,255,255,0.2);
+}
+
+.brand h1{
+  margin:0;
+  font-size:18px;
+  line-height:1.1;
+}
+
+.brand p{
+  margin:3px 0 0;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.status-pill{
+  padding:7px 10px;
+  font-size:12px;
+  border-radius:999px;
+  border:1px solid rgba(250,204,21,0.45);
+  color:#fde68a;
+  background:rgba(250,204,21,0.12);
+}
+
+.layout{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);
+  gap:14px;
+}
+
+.card{
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:linear-gradient(165deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+  backdrop-filter:blur(12px);
+  transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.menu-panel{
+  padding:14px;
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+label{
+  font-size:12px;
+  color:var(--muted);
+}
+
+select,input{
+  height:40px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.16);
+  padding:0 11px;
+  outline:none;
+  color:var(--text);
+  background:rgba(6,14,30,0.72);
+  font-family:inherit;
+  transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+input::placeholder{
+  color:#93a2bc;
+}
+
+select:focus,input:focus{
+  border-color:rgba(59,130,246,0.7);
+  box-shadow:0 0 0 3px rgba(59,130,246,0.24);
+}
+
+#table{
+  width:140px;
+}
+
+#search{
+  flex:1;
+  min-width:160px;
+}
+
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:10px;
+}
+
+.menu-item{
+  border:1px solid rgba(255,255,255,0.1);
+  background:linear-gradient(155deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border-radius:12px;
+  padding:11px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.menu-item .name{
+  font-size:14px;
+  font-weight:700;
+  line-height:1.25;
+}
+
+.menu-item .meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+}
+
+.menu-item .price{
+  color:var(--gold);
+  font-weight:700;
+}
+
+.add-btn{
+  border:none;
+  border-radius:9px;
+  height:34px;
+  background:linear-gradient(120deg,var(--blue),#2563eb);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+.order-panel{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.order-panel h3{
+  margin:0;
+  font-size:17px;
+}
+
+.order-list{
+  max-height:430px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  padding-right:2px;
+}
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed rgba(255,255,255,0.2);
+  border-radius:12px;
+  padding:22px 10px;
+}
+
+.order-item{
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:11px;
+  background:linear-gradient(150deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  transition:transform .18s ease, border-color .2s ease;
+}
+
+.order-item .n{
+  font-size:14px;
+  font-weight:700;
+}
+
+.order-item .p{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.qty{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.qty button{
+  border:none;
+  width:26px;
+  height:26px;
+  border-radius:7px;
+  background:#1e293b;
+  color:#fff;
+  cursor:pointer;
+  transition:transform .15s ease, background .2s ease;
+}
+
+.remove{
+  border:none;
+  background:rgba(239,68,68,0.18);
+  color:#fecaca;
+  border-radius:8px;
+  height:28px;
+  padding:0 8px;
+  cursor:pointer;
+  transition:transform .15s ease, background .2s ease;
+}
+
+.summary{
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;
+  padding:10px;
+  background:linear-gradient(120deg, rgba(59,130,246,0.14), rgba(250,204,21,0.1));
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:6px 0;
+}
+
+.summary-row strong{
+  color:#86efac;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.btn{
+  height:40px;
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+.btn-clear{
+  background:rgba(255,255,255,0.1);
+  color:#e2e8f0;
+  border:1px solid rgba(255,255,255,0.2);
+}
+
+.btn-send{
+  background:linear-gradient(120deg,#f59e0b,#f97316);
+  color:#101827;
+}
+
+.topbar:hover,
+.card:hover{
+  border-color:rgba(59,130,246,0.42);
+  box-shadow:0 14px 28px rgba(0,0,0,0.28);
+}
+
+.menu-item:hover{
+  transform:translateY(-3px);
+  border-color:rgba(59,130,246,0.5);
+  box-shadow:0 12px 24px rgba(2,8,23,0.45);
+}
+
+.order-item:hover{
+  transform:translateY(-2px);
+  border-color:rgba(250,204,21,0.45);
+}
+
+.add-btn:hover,
+.btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.07);
+}
+
+.add-btn:active,
+.btn:active,
+.qty button:active,
+.remove:active{
+  transform:scale(0.96);
+}
+
+.qty button:hover{
+  background:#334155;
+}
+
+.remove:hover{
+  background:rgba(239,68,68,0.28);
+}
+
+.note{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.toast{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  min-width:260px;
+  max-width:360px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:linear-gradient(160deg, rgba(15,23,42,0.95), rgba(30,41,59,0.9));
+  color:#e2e8f0;
+  padding:12px 14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.35);
+  transform:translateY(12px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+  z-index:9999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.toast-title{
+  font-size:13px;
+  font-weight:700;
+  margin:0 0 3px;
+}
+
+.toast-msg{
+  font-size:12px;
+  color:#cbd5e1;
+}
+
+.toast.success{
+  border-color:rgba(34,197,94,0.5);
+}
+
+.toast.error{
+  border-color:rgba(239,68,68,0.5);
+}
+
+@media (max-width:980px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .order-list{
+    max-height:320px;
+  }
+}
+
+@media (max-width:560px){
+  .shell{
+    padding:12px 10px 14px;
+  }
+
+  .topbar{
+    padding:12px;
+  }
+
+  .brand h1{
+    font-size:16px;
+  }
+
+  #table{
+    width:100%;
+  }
+
+  .toolbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .menu-grid{
+    grid-template-columns:1fr;
+  }
+
+  .actions{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header class="topbar card">
+    <div class="brand">
+      <img src="/static/images/logo.jpg" alt="Logo">
+      <div>
+        <h1>Shahi Mutton Khanawal</h1>
+        <p>Waiter POS Dashboard</p>
+      </div>
+    </div>
+    <div class="status-pill">Live Order Mode</div>
+  </header>
+
+  <main class="layout">
+    <section class="menu-panel card">
+      <div class="toolbar">
+        <div>
+          <label for="table">Table</label><br>
+          <select id="table">
+            <option value="1">Table 1</option>
+            <option value="2">Table 2</option>
+            <option value="3">Table 3</option>
+            <option value="4">Table 4</option>
+            <option value="5">Table 5</option>
+            <option value="6">Table 6</option>
+            <option value="7">Table 7</option>
+            <option value="8">Table 8</option>
+            <option value="9">Table 9</option>
+            <option value="10">Table 10</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <label for="search">Search Menu</label><br>
+          <input id="search" type="text" placeholder="Search item name...">
+        </div>
+      </div>
+      <div id="menu" class="menu-grid"></div>
+    </section>
+
+    <aside class="order-panel card">
+      <h3>Current Order</h3>
+      <div id="order" class="order-list"></div>
+
+      <div class="summary">
+        <div class="summary-row">
+          <span>Total</span>
+          <strong id="total">&#8377; 0.00</strong>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-clear" id="clearBtn">Clear</button>
+        <button class="btn btn-send" id="sendBtn">Send Order</button>
+      </div>
+    
+    </aside>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <div class="toast-title" id="toastTitle"></div>
+  <div class="toast-msg" id="toastMsg"></div>
+</div>
+
+<script>
+let order = [];
+let menuItems = [];
+let toastTimer = null;
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g, function(c){
+    return { "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c];
+  });
+}
+
+function formatMoney(amount){
+  return "&#8377; " + Number(amount || 0).toFixed(2);
+}
+
+function showToast(type, title, message){
+  const toast = document.getElementById("toast");
+  const toastTitle = document.getElementById("toastTitle");
+  const toastMsg = document.getElementById("toastMsg");
+  if(!toast || !toastTitle || !toastMsg) return;
+
+  toast.classList.remove("success", "error", "show");
+  toast.classList.add(type === "error" ? "error" : "success");
+  toastTitle.textContent = title || "";
+  toastMsg.textContent = message || "";
+  toast.classList.add("show");
+
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){
+    toast.classList.remove("show");
+  }, 2200);
+}
+
+function renderMenu(items){
+  const menu = document.getElementById("menu");
+  menu.innerHTML = "";
+
+  if(!items.length){
+    menu.innerHTML = '<div class="empty">No menu items found.</div>';
+    return;
+  }
+
+  items.forEach(function(item){
+    const card = document.createElement("div");
+    card.className = "menu-item";
+    card.innerHTML =
+      '<div class="name">' + escapeHtml(item.item_name) + '</div>' +
+      '<div class="meta">' +
+      '<span class="price">' + formatMoney(item.price) + '</span>' +
+      '<button class="add-btn" type="button">Add</button>' +
+      "</div>";
+
+    card.querySelector(".add-btn").addEventListener("click", function(){
+      addItem(item.item_name, Number(item.price));
+    });
+
+    menu.appendChild(card);
+  });
+}
+
+async function loadMenu(){
+  const menu = document.getElementById("menu");
+  menu.innerHTML = '<div class="empty">Loading menu...</div>';
+  try{
+    const res = await fetch("/api/items");
+    const data = await res.json();
+    menuItems = Array.isArray(data) ? data : [];
+    renderMenu(menuItems);
+  }catch(err){
+    menu.innerHTML = '<div class="empty">Failed to load menu. Try refresh.</div>';
+  }
+}
+
+function filterMenu(){
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  if(!q){
+    renderMenu(menuItems);
+    return;
+  }
+  const filtered = menuItems.filter(function(i){
+    return String(i.item_name || "").toLowerCase().includes(q);
+  });
+  renderMenu(filtered);
+}
+
+function addItem(name, price){
+  const found = order.find(function(i){ return i.name === name; });
+  if(found){
+    found.qty += 1;
+  }else{
+    order.push({ name:name, price:Number(price), qty:1 });
+  }
+  renderOrder();
+}
+
+function changeQty(index, delta){
+  if(!order[index]) return;
+  order[index].qty += delta;
+  if(order[index].qty <= 0){
+    order.splice(index, 1);
+  }
+  renderOrder();
+}
+
+function removeItem(index){
+  order.splice(index, 1);
+  renderOrder();
+}
+
+function clearOrder(){
+  order = [];
+  renderOrder();
+}
+
+function renderOrder(){
+  const wrap = document.getElementById("order");
+  wrap.innerHTML = "";
+
+  if(!order.length){
+    wrap.innerHTML = '<div class="empty">No items added yet.</div>';
+    document.getElementById("total").innerHTML = formatMoney(0);
+    return;
+  }
+
+  let total = 0;
+  order.forEach(function(item, index){
+    const lineTotal = Number(item.price) * Number(item.qty);
+    total += lineTotal;
+
+    const row = document.createElement("div");
+    row.className = "order-item";
+    row.innerHTML =
+      '<div>' +
+      '<div class="n">' + escapeHtml(item.name) + '</div>' +
+      '<div class="p">' + formatMoney(item.price) + " x " + item.qty + "</div>" +
+      "</div>" +
+      '<div style="text-align:right;">' +
+      '<div class="qty">' +
+      '<button type="button" data-act="minus">-</button>' +
+      "<span>" + item.qty + "</span>" +
+      '<button type="button" data-act="plus">+</button>' +
+      "</div>" +
+      '<div style="margin-top:6px;font-weight:700;">' + formatMoney(lineTotal) + "</div>" +
+      '<button type="button" class="remove" style="margin-top:6px;">Remove</button>' +
+      "</div>";
+
+    row.querySelector('[data-act="minus"]').addEventListener("click", function(){
+      changeQty(index, -1);
+    });
+    row.querySelector('[data-act="plus"]').addEventListener("click", function(){
+      changeQty(index, 1);
+    });
+    row.querySelector(".remove").addEventListener("click", function(){
+      removeItem(index);
+    });
+
+    wrap.appendChild(row);
+  });
+
+  document.getElementById("total").innerHTML = formatMoney(total);
+}
+
+async function submitOrder(){
+  if(!order.length){
+    showToast("error", "No Items Added", "Please add at least one item.");
+    return;
+  }
+
+  const table = document.getElementById("table").value || "1";
+  const total = order.reduce(function(sum, i){
+    return sum + (Number(i.price) * Number(i.qty));
+  }, 0);
+
+  const btn = document.getElementById("sendBtn");
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+
+  try{
+    await fetch("/api/waiter/order", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        table: table,
+        items: JSON.stringify(order),
+        amount: total
+      })
+    });
+    showToast("success", "Order Sent", "Order has been sent to billing.");
+    clearOrder();
+  }catch(err){
+    showToast("error", "Send Failed", "Unable to send order. Try again.");
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+document.getElementById("search").addEventListener("input", filterMenu);
+document.getElementById("clearBtn").addEventListener("click", clearOrder);
+document.getElementById("sendBtn").addEventListener("click", submitOrder);
+
+loadMenu();
+renderOrder();
+</script>
+
+</body>
+</html>
