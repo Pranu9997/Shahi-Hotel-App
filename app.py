@@ -40,11 +40,11 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 
 
-app.config['MYSQL_HOST'] = 'mysql.railway.internal'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'PcUXlJhHUounEufrtkuUoQXHItLKEYIt'
-app.config['MYSQL_DB'] = 'railway'
-
+app.config['MYSQL_HOST'] = os.getenv("mysql.railway.internal")
+app.config['MYSQL_USER'] = os.getenv("root")
+app.config['MYSQL_PASSWORD'] = os.getenv("PcUXlJhHUounEufrtkuUoQXHItLKEYIt")
+app.config['MYSQL_DB'] = os.getenv("railway")
+app.config['MYSQL_PORT'] = int(os.getenv("MYSQLPORT", 3306))
 
 mysql = MySQL(app)
 
