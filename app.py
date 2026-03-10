@@ -48,7 +48,7 @@ def get_db():
         password="Shahi@Pranav",
         port=5432
     )
-    return conn
+    cursor = conn.cursor()
 
 @app.route('/')
 def home():
