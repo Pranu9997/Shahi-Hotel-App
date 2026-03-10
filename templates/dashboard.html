@@ -931,8 +931,8 @@ async function loadTables(){
         card.className =
             "table-card " + t.status.toLowerCase();
 
-        card.innerHTML =
-            "Table " + t.table_no + "<br>" + t.status;
+     card.innerHTML =
+    "Table " + t.table_no + "<br>" + t.status.toUpperCase();
 
         map.appendChild(card);
     });
@@ -968,7 +968,7 @@ function loadOccupiedTables() {
     .then(data => {
 
         // sirf occupied count
-        let occupied = data.filter(t => t.status === "Occupied").length;
+       let occupied = data.filter(t => t.status === "ondine").length;
 
         document.getElementById("k_tables").innerText = occupied;
     })

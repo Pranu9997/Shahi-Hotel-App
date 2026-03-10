@@ -1,9 +1,8 @@
-import pymysql
-pymysql.install_as_MySQLdb()
+import psycopg2
+import psycopg2.extras
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, Response
 from flask_cors import CORS
-from flask_mysqldb import MySQL
-from MySQLdb.cursors import DictCursor
+
 import os
 import time
 import random
@@ -39,14 +38,17 @@ load_env_file(os.path.join(BASE_DIR, '.env'))
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 
+import psycopg2
 
-app.config['MYSQL_HOST'] = os.getenv("mysql.railway.internal")
-app.config['MYSQL_USER'] = os.getenv("root")
-app.config['MYSQL_PASSWORD'] = os.getenv("PcUXlJhHUounEufrtkuUoQXHItLKEYIt")
-app.config['MYSQL_DB'] = os.getenv("railway")
-app.config['MYSQL_PORT'] = int(os.getenv("MYSQLPORT", 3306))
-
-mysql = MySQL(app)
+def get_db():
+    conn = psycopg2.connect(
+        host="db.kheoeudkirehzncxuqkj.supabase.co",
+        database="postgres",
+        user="postgres",
+        password="Shahi@Pranav",
+        port=5432
+    )
+    return conn
 
 @app.route('/')
 def home():
@@ -57,8 +59,6 @@ def home():
 # -------------------------
 app.secret_key = os.getenv('FLASK_SECRET', 'shahi_secret_key')
 
-def get_db():
-    return mysql.connection
 
 
 def generate_login_captcha(length=5):
@@ -115,14 +115,26 @@ def send_otp_email(to_email, otp_code):
             )
         return False, f"Failed to send OTP email: {e}"
 
-
 def users_has_email_column():
     try:
-        cur = mysql.connection.cursor(DictCursor)
-        cur.execute("SHOW COLUMNS FROM users LIKE 'email'")
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        cur.execute("""
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'users'
+        AND column_name = 'email'
+        AND table_schema = 'public'
+        """)
+
         row = cur.fetchone()
+
         cur.close()
+        conn.close()
+
         return bool(row)
+
     except Exception:
         return False
 
@@ -146,6 +158,7 @@ def fetch_all_menu():
         })
 
     cur.close()
+    conn.close()
     return items
 
 
@@ -174,13 +187,15 @@ def login():
                 username=username
             )
 
-        cur = mysql.connection.cursor()
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(
             "SELECT * FROM users WHERE username=%s AND password=%s",
             (username, password)
         )
         user = cur.fetchone()
         cur.close()
+        conn.close()
 
         if user:
             session['user'] = username
@@ -228,10 +243,12 @@ def forgot_password():
             )
 
         try:
-            cur = mysql.connection.cursor(DictCursor)
+
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute("SELECT id FROM users WHERE email=%s LIMIT 1", (email,))
             user = cur.fetchone()
             cur.close()
+            conn.close()
         except Exception as e:
             return render_template(
                 'forgot.html',
@@ -319,13 +336,16 @@ def forgot_password():
             )
 
         try:
-            cur = mysql.connection.cursor()
+           
+            conn = get_db()
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute(
                 "UPDATE users SET password=%s WHERE email=%s",
                 (new_password, email)
             )
-            mysql.connection.commit()
+            conn.commit()
             cur.close()
+            conn.close()
         except Exception as e:
             return render_template(
                 'forgot.html',
@@ -363,7 +383,8 @@ def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
 
-    cur = mysql.connection.cursor()
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         SELECT SUM(amount)
         FROM billing
@@ -372,6 +393,7 @@ def dashboard():
 
     result = cur.fetchone()
     cur.close()
+    conn.close()
 
     today_revenue = result[0] if result and result[0] else 0
 
@@ -383,8 +405,10 @@ def dashboard():
 
 
 @app.route('/today-orders')
+
 def today_orders():
-    cur = mysql.connection.cursor(DictCursor)
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     cur.execute("""
         SELECT bill_no, table_number, amount, status
@@ -394,6 +418,7 @@ def today_orders():
 
     data = cur.fetchall()
     cur.close()
+    conn.close()
 
     return jsonify(data)
 
@@ -402,8 +427,8 @@ def today_orders():
 def export_bills_csv():
     if 'user' not in session:
         return redirect(url_for('login'))
-
-    cur = mysql.connection.cursor(DictCursor)
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         SELECT id, bill_no, table_number, amount
         FROM billing
@@ -411,6 +436,7 @@ def export_bills_csv():
     """)
     rows = cur.fetchall()
     cur.close()
+    conn.close()
 
     output = io.StringIO()
     writer = csv.writer(output)
@@ -444,8 +470,8 @@ def export_bills_csv():
 def export_bills_pdf():
     if 'user' not in session:
         return redirect(url_for('login'))
-
-    cur = mysql.connection.cursor(DictCursor)
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         SELECT id, bill_no, table_number, amount
         FROM billing
@@ -453,6 +479,7 @@ def export_bills_pdf():
     """)
     rows = cur.fetchall()
     cur.close()
+    conn.close()
 
     total_amount = 0.0
     body_rows = []
@@ -550,7 +577,8 @@ def waiter_order():
 
     bill_no = "INV" + str(int(time.time()))
 
-    cur = mysql.connection.cursor()
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         INSERT INTO billing
         (bill_no, table_number, items, amount, status)
@@ -571,8 +599,9 @@ def waiter_order():
             (table, "ondine")
         )
 
-    mysql.connection.commit()
+    conn.commit()
     cur.close()
+    conn.close()
 
     # Dashboard ke format me response
     return jsonify({
@@ -618,7 +647,8 @@ def api_items():
 @app.route('/api/billing/pending/<int:table_no>', methods=['GET'])
 def get_pending_bill(table_no):
     try:
-        cur = mysql.connection.cursor(DictCursor)
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         cur.execute("""
             SELECT items, status
@@ -630,6 +660,7 @@ def get_pending_bill(table_no):
 
         row = cur.fetchone()
         cur.close()
+        conn.close()
 
         # ⭐ IMPORTANT LOGIC
         if row and row["status"].lower() == "pending":
@@ -652,7 +683,8 @@ def get_pending_bill(table_no):
 @app.route('/api/billing/pay/<bill_no>', methods=['POST'])
 def pay_bill(bill_no):
     try:
-        cur = mysql.connection.cursor(DictCursor)
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # bill ka table number nikaalo
         cur.execute(
@@ -678,8 +710,9 @@ def pay_bill(bill_no):
             (table_number,)
         )
 
-        mysql.connection.commit()
+        conn.commit()
         cur.close()
+        conn.close()
 
         return jsonify({"ok": True})
 
@@ -701,14 +734,15 @@ def api_menu_add():
 
         if not name or price is None:
             return jsonify({'error': 'Missing item name or price'}), 400
-
-        cur = mysql.connection.cursor(DictCursor)
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(
             "INSERT INTO menu (item_name, category, price) VALUES (%s, %s, %s)",
             (name, category, float(price))
         )
-        mysql.connection.commit()
+        conn.commit()
         cur.close()
+        conn.close()
 
         items = fetch_all_menu()
         return jsonify({'items': items}), 200
@@ -728,11 +762,12 @@ def api_menu_delete():
 
         if not item_id:
             return jsonify({'error': 'Missing id'}), 400
-
-        cur = mysql.connection.cursor(DictCursor)
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("DELETE FROM menu WHERE id = %s", (item_id,))
-        mysql.connection.commit()
+        conn.commit()
         cur.close()
+        conn.close()
 
         items = fetch_all_menu()
         return jsonify({'items': items}), 200
@@ -753,17 +788,18 @@ def api_billing():
         items_text = data.get('items')
         amount = float(data.get('amount', 0) or 0)
         status = data.get('status', 'Pending')
-
-        cur = mysql.connection.cursor(DictCursor)
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(
             "INSERT INTO billing (bill_no, table_number, items, amount, status) VALUES (%s, %s, %s, %s, %s)",
             (bill_no, table_number, items_text, amount, status)
         )
-        mysql.connection.commit()
+        conn.commit()
 
         cur.execute("SELECT * FROM billing ORDER BY id DESC")
         saved = cur.fetchone()
         cur.close()
+        conn.close()
 
         if saved and saved.get('amount') is not None:
             try:
@@ -786,11 +822,14 @@ def api_billing():
 # -------------------------
 @app.route('/api/tables', methods=['GET'])
 def api_tables():
-    try:
-        cur = mysql.connection.cursor(DictCursor)
+    try: 
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("SELECT table_no, status FROM tables ORDER BY table_no ASC")
         rows = cur.fetchall()
+        
         cur.close()
+        conn.close()
         return jsonify(rows), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -804,8 +843,8 @@ def api_tables_update(table_no):
 
         if status is None:
             return jsonify({'error': 'Missing status'}), 400
-
-        cur = mysql.connection.cursor(DictCursor)
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("SELECT 1 FROM tables WHERE table_no = %s", (table_no,))
         exists = cur.fetchone()
 
@@ -820,8 +859,9 @@ def api_tables_update(table_no):
                 (table_no, status)
             )
 
-        mysql.connection.commit()
+        conn.commit()
         cur.close()
+        conn.close()
         return jsonify({'ok': True}), 200
 
     except Exception as e:
